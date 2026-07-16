@@ -1,6 +1,6 @@
 from sqlite3 import Connection
 
-def insert_portfolio(connection: Connection) -> None:
+def _insert_portfolio(connection: Connection) -> None:
     
     # Insert portfolio into database
     connection.execute(
@@ -22,7 +22,7 @@ def insert_portfolio(connection: Connection) -> None:
     connection.commit()
 
 
-def insert_positions(connection: Connection) -> None:
+def _insert_positions(connection: Connection) -> None:
 
     # Define positions
     positions = [

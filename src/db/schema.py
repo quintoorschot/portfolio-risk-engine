@@ -1,6 +1,6 @@
 from sqlite3 import Connection
 
-def create_tables(connection: Connection) -> None:
+def _create_tables(connection: Connection) -> None:
     
     # Create portfolios table
     connection.execute(

@@ -1,28 +1,32 @@
-from src.db.connection import get_connection
-from src.db.schema import create_tables
 from src.db.repositories import *
-from src.db.tools import show_positions
+from src.db.tools import show_positions, initialize_database, get_prices_for_ticker
 from src.market_data import store_historical_prices, get_stored_historical_prices
+from src.dataclasses.Returns import Returns
 from typing import List
-import sqlite3
 
 TICKERS: List[str] = ["AAPL", "MSFT"]
 
+
+import pandas as pd
+import numpy as np
+
+def calculate_historic_var(values: Returns, confidence_interval: float = 0.95) -> float:
+
+    return -1
+
+
 def main() -> None:
     
-    connection: sqlite3.Connection = get_connection()
+    connection: Connection = initialize_database()
 
-    try:
-        create_tables(connection)
-        insert_portfolio(connection)
-        insert_positions(connection)
-        show_positions(connection)
+    store_historical_prices(connection, TICKERS)
 
-        store_historical_prices(connection, TICKERS)
-        print(get_stored_historical_prices(connection))
+    # show_positions(connection)
+    # print(get_stored_historical_prices(connection))
 
-    finally:
-        connection.close()
+    print(get_prices_for_ticker(connection, "AAPL"))
+
+    connection.close()
 
 
 if __name__ == "__main__":
