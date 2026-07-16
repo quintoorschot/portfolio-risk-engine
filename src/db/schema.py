@@ -31,4 +31,16 @@ def create_tables(connection: Connection) -> None:
         """
     )
 
+    # Create historical prices table
+    connection.execute(
+        """
+        CREATE TABLE IF NOT EXISTS historical_prices (
+            instrument_id TEXT NOT NULL,
+            price_date TEXT NOT NULL,
+            close_price REAL NOT NULL,
+            PRIMARY KEY (instrument_id, price_date)
+        )
+        """
+    )
+
     connection.commit()
