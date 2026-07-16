@@ -9,10 +9,13 @@ def main() -> None:
     DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     # Open the database (creates one if it doesn't exist yet)
-    connection = sqlite3.connect(DATABASE_PATH)
+    connection: sqlite3.Connection = sqlite3.connect(DATABASE_PATH)
 
     try:
         create_tables(connection)
+        insert_portfolio(connection)
+        insert_positions(connection)
+        show_positions(connection)
     finally:
         connection.close()
 
@@ -86,7 +89,7 @@ def insert_positions(connection: sqlite3.Connection) -> None:
             portfolio_id,
             instrument_id,
             quantity,
-            market_price,
+            market_price
         )
         VALUES (?, ?, ?, ?)
         """,
