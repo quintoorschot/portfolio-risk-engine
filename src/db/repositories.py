@@ -40,6 +40,10 @@ def insert_positions(connection: Connection) -> None:
             market_price
         )
         VALUES (?, ?, ?, ?)
+        ON CONFLICT (portfolio_id, instrument_id)
+        DO UPDATE SET
+            quantity = excluded.quantity,
+            market_price = excluded.market_price
         """,
         positions
     )

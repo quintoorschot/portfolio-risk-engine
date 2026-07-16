@@ -23,6 +23,8 @@ def create_tables(connection: Connection) -> None:
             quantity REAL NOT NULL,
             market_price REAL NOT NULL,
 
+            UNIQUE (portfolio_id, instrument_ID)
+
             FOREIGN KEY (portfolio_id)
                 REFERENCES portfolios(portfolio_id)
         )
