@@ -27,8 +27,11 @@ class Portfolio:
         self.positions['total_position_value'] = self.positions['quantity'] * self.positions['market_price']
 
 
-    def historical_var(self, confidence_interval=0.95) -> float:
+    def historical_var(self, confidence_interval: float = 0.95) -> float:
         """Takes a confidence interval between 0 and 1 and calculates historical value-at-risk"""
+
+        if not 0 <= confidence_interval <= 1:
+            raise ValueError("[ERROR]: Confidence interval must be in range [0, 1]!")
 
         total_value_at_risk: float = 0
         for position in self.positions.itertuples():
