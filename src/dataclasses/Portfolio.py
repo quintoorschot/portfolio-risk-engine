@@ -28,6 +28,7 @@ class Portfolio:
         self._fetch_positions()
 
 
+    # WARNING: CURRENT IMPLEMENTATION DOESN'T MODEL DEPENDENCE
     def historical_var(self, confidence_interval: float = 0.95) -> float:
         """Takes a confidence interval between 0 and 1 and returns the daily historical value-at-risk"""
 
@@ -43,7 +44,7 @@ class Portfolio:
         return total_value_at_risk
     
 
-    # WARNING: CURRENTLY ASSUMES ASSETS ARE INDEPENDENT (I.E. CORRELATION=0.0)
+    # WARNING: CURRENT IMPLEMENTATION ASSUMES ASSETS ARE INDEPENDENT (I.E. CORRELATION=0.0)
     def parametric_var(self, confidence_interval: float = 0.95) -> float:
         """Takes a confidence interval between 0 and 1 and returns the daily parametic (variance-covariance) value-at-risk"""
 
