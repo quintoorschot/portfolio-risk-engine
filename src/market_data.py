@@ -44,7 +44,7 @@ def store_historical_prices(connection: Connection, tickers: List[str] | str) ->
 
 def get_stored_historical_prices(connection: Connection) -> pd.DataFrame:
 
-    query = """
+    query: str = """
         SELECT
             price_date,
             instrument_id,

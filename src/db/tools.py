@@ -1,7 +1,7 @@
 from src.db.connection import get_connection
 from src.db.repositories import _insert_portfolio, _insert_positions
 from src.db.schema import _create_tables
-from sqlite3 import Connection
+from sqlite3 import Connection, Cursor
 import pandas as pd
 
 def get_prices_for_ticker(connection: Connection, ticker: str) -> pd.DataFrame:
@@ -16,7 +16,7 @@ def get_prices_for_ticker(connection: Connection, ticker: str) -> pd.DataFrame:
 
 
 def show_positions(connection: Connection) -> None:
-    cursor = connection.execute(
+    cursor: Cursor = connection.execute(
         """
         SELECT
             instrument_id,

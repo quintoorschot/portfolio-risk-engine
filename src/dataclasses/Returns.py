@@ -5,11 +5,11 @@ import numpy as np
 @dataclass
 class Returns:
 
-    historicalPrices: pd.DataFrame = field(repr=False)
+    historical_prices: pd.DataFrame = field(repr=False)
     log_returns: list[float] = field(init=False)
 
     def __post_init__(self) -> None:
-        prices: pd.Series = self.historicalPrices['market_price']
+        prices: pd.Series = self.historical_prices['market_price']
         self.log_returns = [
             np.log(current / previous)
             for previous, current in zip(prices[:], prices[1:])

@@ -1,8 +1,8 @@
 from src.db.repositories import *
 from src.db.tools import show_positions, initialize_database, get_prices_for_ticker
 from src.market_data import store_historical_prices, get_stored_historical_prices
-from src.var import calculate_historic_var
 from src.dataclasses.Returns import Returns
+from src.dataclasses.Portfolio import Portfolio
 from typing import List
 import pandas as pd
 
@@ -17,10 +17,15 @@ def main() -> None:
     # show_positions(connection)
     # print(get_stored_historical_prices(connection))
 
-    prices: pd.DataFrame = get_prices_for_ticker(connection, "AAPL")
-    returns = Returns(prices)
+    # prices: pd.DataFrame = get_prices_for_ticker(connection, "AAPL")
+    # returns: Returns = Returns(prices)
 
-    print(calculate_historic_var(10_000, returns))
+    # print(calculate_historic_var(10_000, returns))
+
+    portfolio: Portfolio = Portfolio(connection, "DEMO")
+    print(portfolio.positions)
+
+    print("Historical VaR:", portfolio.historical_var)
 
     connection.close()
 
