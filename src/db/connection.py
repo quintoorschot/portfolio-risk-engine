@@ -26,7 +26,7 @@ def database_connection() -> Iterator[sqlite3.Connection]:
 
 
 def _get_connection(database_path: Path = DATABASE_PATH) -> sqlite3.Connection:
-    """Create and configure SQLite database connection"""
+    """Creates and configure SQLite database connection, then returns it"""
 
     # Create the data directory if it doesn't exist yet
     DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
