@@ -16,6 +16,7 @@ def main() -> None:
         print(portfolio.positions)
 
         print("Historical VaR:", portfolio.historical_var(confidence_interval=0.95))
+        print("Parametric VaR:", portfolio.parametric_var(confidence_interval=0.95))
 
 
 if __name__ == "__main__":
