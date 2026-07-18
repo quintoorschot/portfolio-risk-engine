@@ -27,8 +27,7 @@ class Portfolio:
         self.positions['total_position_value'] = self.positions['quantity'] * self.positions['market_price']
 
 
-    @property
-    def historical_var(self) -> float:
+    def historical_var(self, confidence_interval) -> float:
 
         total_value_at_risk: float = 0
         for position in self.positions.itertuples():
@@ -39,7 +38,7 @@ class Portfolio:
             total_position_value: float = float(position.total_position_value)
             price_history: pd.DataFrame = get_prices_for_ticker(self.connection, str(position.instrument_id))
             returns: Returns = Returns(price_history)
-            total_value_at_risk += calculate_historical_var(total_position_value, returns)
+            total_value_at_risk += calculate_historical_var(total_position_value, returns, confidence_interval)
 
         return total_value_at_risk
 

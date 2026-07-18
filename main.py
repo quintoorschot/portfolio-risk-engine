@@ -14,18 +14,10 @@ def main() -> None:
 
     store_historical_prices(connection, TICKERS)
 
-    # show_positions(connection)
-    # print(get_stored_historical_prices(connection))
-
-    # prices: pd.DataFrame = get_prices_for_ticker(connection, "AAPL")
-    # returns: Returns = Returns(prices)
-
-    # print(calculate_historic_var(10_000, returns))
-
     portfolio: Portfolio = Portfolio(connection, "DEMO")
     print(portfolio.positions)
 
-    print("Historical VaR:", portfolio.historical_var)
+    print("Historical VaR:", portfolio.historical_var(confidence_interval=0.95))
 
     connection.close()
 
