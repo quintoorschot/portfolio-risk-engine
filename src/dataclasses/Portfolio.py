@@ -1,8 +1,7 @@
 from dataclasses import dataclass, field
 from src.dataclasses.Position import Position
-from src.dataclasses.Returns import Returns
-from src.var import calculate_historical_var, calculate_parametric_var
 from src.market_data import get_price_data
+from collections.abc import Iterator
 from typing import List, Any
 import pandas as pd
 import sqlite3
@@ -28,36 +27,23 @@ class Portfolio:
         self._fetch_positions()
 
 
-    # WARNING: CURRENT IMPLEMENTATION DOESN'T MODEL DEPENDENCE
-    def historical_var(self, confidence_interval: float = 0.95) -> float:
-        """Takes a confidence interval between 0 and 1 and returns the daily historical value-at-risk"""
-
-        if not 0 <= confidence_interval <= 1:
-            raise ValueError("[ERROR]: Confidence interval must be in range [0, 1]!")
-
-        total_value_at_risk: float = 0
-        for position in self.positions:
-            price_history: pd.DataFrame = get_price_data(self.connection, str(position.instrument_id))
-            returns: Returns = Returns(price_history)
-            total_value_at_risk += calculate_historical_var(position.total_value, returns, confidence_interval)
-
-        return total_value_at_risk
-    
+    def __iter__(self) -> Iterator[Position]:
+        return iter(self.positions)
 
     # WARNING: CURRENT IMPLEMENTATION ASSUMES ASSETS ARE INDEPENDENT (I.E. CORRELATION=0.0)
-    def parametric_var(self, confidence_interval: float = 0.95) -> float:
-        """Takes a confidence interval between 0 and 1 and returns the daily parametic (variance-covariance) value-at-risk"""
+    # def parametric_var(self, confidence_interval: float = 0.95) -> float:
+    #     """Takes a confidence interval between 0 and 1 and returns the daily parametic (variance-covariance) value-at-risk"""
 
-        if not 0 <= confidence_interval <= 1:
-            raise ValueError("[ERROR]: Confidence interval must be in range [0, 1]!")
+    #     if not 0 <= confidence_interval <= 1:
+    #         raise ValueError("[ERROR]: Confidence interval must be in range [0, 1]!")
 
-        total_value_at_risk: float = 0
-        for position in self.positions:
-            price_history: pd.DataFrame = get_price_data(self.connection, str(position.instrument_id))
-            returns: Returns = Returns(price_history)
-            total_value_at_risk += calculate_parametric_var(position.total_value, returns, confidence_interval)
+    #     total_value_at_risk: float = 0
+    #     for position in self.positions:
+    #         price_history: pd.DataFrame = get_price_data(self.connection, str(position.instrument_id))
+    #         returns: Returns = Returns(price_history)
+    #         total_value_at_risk += calculate_parametric_var(position.total_value, returns, confidence_interval)
 
-        return total_value_at_risk
+    #     return total_value_at_risk
 
 
     def _fetch_positions(self) -> None:
