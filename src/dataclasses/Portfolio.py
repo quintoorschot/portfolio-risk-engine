@@ -22,9 +22,8 @@ class Portfolio:
             FROM portfolios
             WHERE portfolio_id = ?
         """
-        result: pd.DataFrame = pd.read_sql_query(query, self.connection, params=(self.portfolio_id,))
-        self.portfolio_name, self.base_currency = result.iloc[0]
-        self._fetch_positions()
+        self.portfolio_name, self.base_currency = pd.read_sql_query(query, self.connection, params=(self.portfolio_id,)).iloc[0]
+        self.positions = self._fetch_positions()
 
 
     def __iter__(self) -> Iterator[Position]:
@@ -46,7 +45,7 @@ class Portfolio:
     #     return total_value_at_risk
 
 
-    def _fetch_positions(self) -> None:
+    def _fetch_positions(self) -> List[Position]:
         """Fetches the position data from the database and stores it in the portfolio instance"""
 
         query: str = """
@@ -57,7 +56,7 @@ class Portfolio:
         cursor: sqlite3.Cursor = self.connection.execute(query, (self.portfolio_id,))
         rows: List[Any] = cursor.fetchall()
 
-        self.positions = [
+        return [
             Position(
                 portfolio_id = self.portfolio_id,
                 position_id = row[0],
