@@ -13,16 +13,6 @@ def calculate_historical_var(connection: sqlite3.Connection, portfolio: Portfoli
 
     positions: List = list(portfolio)
 
-    price_data: List[pd.DataFrame] = [get_price_data(connection, position.instrument_id) for position in portfolio]
-
-    combined: pd.DataFrame = pd.concat(price_data, ignore_index=True)
-
-    wide: pd.DataFrame = combined.pivot(
-        index='price_date',
-        columns='instrument_id',
-        values='market_price',
-    )
-
     quantities = pd.Series(
         {
             position.instrument_id: position.quantity
@@ -31,15 +21,27 @@ def calculate_historical_var(connection: sqlite3.Connection, portfolio: Portfoli
         dtype=float,
     )
 
-    wide = wide.reindex(columns=quantities.index)
+    prices = (
+        pd.concat(
+            (
+                get_price_data(connection, position.instrument_id)
+                for position in portfolio
+            ),
+            ignore_index=True,
+        )
+        .pivot(
+            index='price_date',
+            columns='instrument_id',
+            values='market_price',
+        )
+        .reindex(columns=quantities.index).dropna()
+    )
 
-    wide = wide.dropna()
-
-    if len(wide) < 2:
+    if len(prices) < 2:
         raise ValueError("[ERROR] Not enough price history to calculate VaR!")
 
-    historical_values: pd.Series = wide.mul(quantities, axis="columns").sum(axis=1)
-    returns: pd.Series = historical_values.apply(np.log).diff().dropna()
+    historical_total_values: pd.Series = prices.mul(quantities, axis="columns").sum(axis=1)
+    returns: pd.Series = historical_total_values.apply(np.log).diff().dropna()
 
     if returns.empty:
         raise ValueError("Not enough returns to calculate VaR")
