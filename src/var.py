@@ -21,7 +21,7 @@ def calculate_historical_var(connection: sqlite3.Connection, portfolio: Portfoli
         dtype=float,
     )
 
-    prices = (
+    prices: pd.DataFrame = (
         pd.concat(
             (
                 get_price_data(connection, position.instrument_id)
@@ -58,18 +58,49 @@ def calculate_historical_var(connection: sqlite3.Connection, portfolio: Portfoli
     return value_at_risk
 
 
-# def calculate_parametric_var(position_value: float, returns: Returns, confidence_interval: float = 0.95) -> float:
+def calculate_parametric_var(connection: sqlite3.Connection, portfolio: Portfolio, confidence_interval: float = 0.95) -> float:
 
-#     if position_value < 0:
-#         raise ValueError(f"[ERROR]: Position value ({position_value}) must be non-negative!")
-    
-#     if not 0 < confidence_interval < 1:
-#         raise ValueError(f"[ERROR]: Confidence interval ({confidence_interval}) must be between 0 and 1!")
+    if not 0 < confidence_interval < 1:
+        raise ValueError(f"[ERROR]: confidence interval ({confidence_interval}) should be between 0 and 1!")
 
-#     returns_mean: float = np.mean(returns.log_returns)
-#     returns_std:  float = np.std(returns.log_returns)
+    positions: List = list(portfolio)
 
-#     z_value: float = float(norm.ppf(confidence_interval))
+    quantities = pd.Series(
+        {
+            position.instrument_id: position.quantity
+            for position in portfolio
+        },
+        dtype=float,
+    )
 
-#     value_at_risk: float = position_value * ((z_value * returns_std) - returns_mean)
-#     return value_at_risk
+    prices: pd.DataFrame = (
+        pd.concat(
+            (
+                get_price_data(connection, position.instrument_id)
+                for position in portfolio
+            ),
+            ignore_index=True,
+        )
+        .pivot(
+            index='price_date',
+            columns='instrument_id',
+            values='market_price',
+        )
+        .reindex(columns=quantities.index).dropna()
+    )
+
+    historical_total_values: pd.Series = prices.mul(quantities, axis="columns").sum(axis=1)
+    returns: pd.Series = historical_total_values.apply(np.log).diff().dropna()
+
+    mean_return, volatility = returns.mean(), returns.std()
+
+    current_portfolio_value: float = sum(
+        position.market_price * position.quantity
+        for position in positions
+    )
+
+    z_index: float = float(norm.ppf(confidence_interval))
+
+    value_at_risk: float = current_portfolio_value * (z_index * volatility - mean_return)
+
+    return value_at_risk
