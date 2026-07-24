@@ -9,7 +9,7 @@ import sqlite3
 def calculate_historical_var(connection: sqlite3.Connection, portfolio: Portfolio, confidence_interval: float = 0.95) -> float:
 
     if not 0 < confidence_interval < 1:
-        raise ValueError(f"[ERROR]: confidence interval {confidence_interval} should be between 0 and 1!")
+        raise ValueError(f"[ERROR]: confidence interval ({confidence_interval}) should be between 0 and 1!")
 
     positions: List = list(portfolio)
 
