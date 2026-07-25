@@ -81,9 +81,6 @@ def calculate_historical_var(
     _validate_confidence_interval(confidence_interval)
     returns, current_portfolio_value = _prepare_var_data(connection, portfolio)
 
-    if returns.empty:
-        raise ValueError("Not enough returns to calculate VaR")
-
     return_at_risk: float = float(returns.quantile(1 - confidence_interval, interpolation="lower"))
     value_at_risk: float = max(0.0, -current_portfolio_value * return_at_risk)
 
