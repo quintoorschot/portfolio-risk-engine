@@ -80,14 +80,6 @@ def calculate_historical_var(
 
     _validate_confidence_interval(confidence_interval)
 
-    quantities = pd.Series(
-        {
-            position.instrument_id: position.quantity
-            for position in portfolio
-        },
-        dtype=float,
-    )
-
     prices: pd.DataFrame = (
         pd.concat(
             (
@@ -101,7 +93,7 @@ def calculate_historical_var(
             columns='instrument_id',
             values='market_price',
         )
-        .reindex(columns=quantities.index).dropna()
+        .dropna()
     )
 
     if len(prices) < 2:
