@@ -16,7 +16,7 @@ def main() -> None:
         portfolio: Portfolio = Portfolio(connection, "DEMO")
         # print(portfolio.positions, "\n")
 
-        #print("Historical VaR:", calculate_historical_var(connection, portfolio, 0.95))
+        print("Historical VaR:", calculate_historical_var(connection, portfolio, 0.95))
         print("Parametric VaR:", calculate_parametric_var(connection, portfolio, 0.95))
 
 
