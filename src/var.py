@@ -79,10 +79,49 @@ def calculate_historical_var(
     """
 
     _validate_confidence_interval(confidence_interval)
-    returns, current_portfolio_value = _prepare_var_data(connection, portfolio)
 
-    return_at_risk: float = float(returns.quantile(1 - confidence_interval, interpolation="lower"))
-    value_at_risk: float = max(0.0, -current_portfolio_value * return_at_risk)
+    quantities = pd.Series(
+        {
+            position.instrument_id: position.quantity
+            for position in portfolio
+        },
+        dtype=float,
+    )
+
+    prices: pd.DataFrame = (
+        pd.concat(
+            (
+                get_price_data(connection, position.instrument_id)
+                for position in portfolio
+            ),
+            ignore_index=True,
+        )
+        .pivot(
+            index='price_date',
+            columns='instrument_id',
+            values='market_price',
+        )
+        .reindex(columns=quantities.index).dropna()
+    )
+
+    if len(prices) < 2:
+        raise ValueError("[ERROR] Not enough price history to calculate VaR!")
+
+    returns: pd.DataFrame = prices.pct_change().dropna()
+    current_exposures: pd.Series = pd.Series(
+        {
+            position.instrument_id: position.quantity * position.market_price
+            for position in portfolio
+        },
+        dtype=float,
+    )
+
+    scenario_pnl: pd.Series = returns.mul(current_exposures, axis="columns").sum(axis=1)
+    losses: pd.Series = -scenario_pnl
+
+    value_at_risk: float = float(
+        losses.quantile(confidence_interval, interpolation="higher")
+    )
 
     return value_at_risk
 
