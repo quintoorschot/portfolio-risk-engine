@@ -47,7 +47,7 @@ def load_price_data(connection: Connection, tickers: List[str] | str) -> None:
     )
 
 
-def get_price_data(connection: Connection, ticker: str) -> pd.DataFrame:
+def get_price_data(connection: Connection, tickers: str | List[str]) -> pd.DataFrame:
     """Returns historical price data about the ticker passed into the function"""
 
     query = """
@@ -57,4 +57,25 @@ def get_price_data(connection: Connection, ticker: str) -> pd.DataFrame:
         ORDER BY price_date
     """
 
-    return pd.read_sql_query(query, connection, params=(ticker,), parse_dates=["price_date"])
+    if isinstance(tickers, str):
+        tickers = [tickers]
+
+    price_frames: List[pd.DataFrame] = [
+        pd.read_sql_query(
+            query,
+            connection,
+            params=(ticker,),
+            parse_dates=['price_date'],
+        )
+        for ticker in tickers
+    ]
+
+    price_data: pd.DataFrame = pd.concat(price_frames)
+
+    price_matrix: pd.DataFrame = price_data.pivot(
+        index="price_date",
+        columns="instrument_id",
+        values="market_price"
+    )
+
+    return price_matrix

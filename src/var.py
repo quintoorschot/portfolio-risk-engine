@@ -26,7 +26,7 @@ def _prepare_var_data(connection: sqlite3.Connection, portfolio: Portfolio) -> T
     prices: pd.DataFrame = (
         pd.concat(
             (
-                get_price_data(connection, position.instrument_id)
+                get_price_data(connection, [position.instrument_id])
                 for position in portfolio
             ),
             ignore_index=True,
@@ -80,22 +80,8 @@ def calculate_historical_var(
 
     _validate_confidence_interval(confidence_interval)
 
-    prices: pd.DataFrame = (
-        pd.concat(
-            (
-                get_price_data(connection, position.instrument_id)
-                for position in portfolio
-            ),
-            ignore_index=True,
-        )
-        .pivot(
-            index='price_date',
-            columns='instrument_id',
-            values='market_price',
-        )
-        .dropna()
-    )
-
+    prices: pd.DataFrame = get_price_data(connection, [position.instrument_id for position in portfolio])
+    
     if len(prices) < 2:
         raise ValueError("[ERROR] Not enough price history to calculate VaR!")
 

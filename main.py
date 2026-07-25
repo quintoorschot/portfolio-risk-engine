@@ -5,6 +5,8 @@ from src.dataclasses.Portfolio import Portfolio
 from typing import List
 from src.var import calculate_historical_var, calculate_parametric_var
 
+from src.market_data import get_price_data
+
 TICKERS: List[str] = ["AAPL", "MSFT"]
 
 def main() -> None:
@@ -17,7 +19,9 @@ def main() -> None:
         # print(portfolio.positions, "\n")
 
         print("Historical VaR:", calculate_historical_var(connection, portfolio, 0.95))
-        print("Parametric VaR:", calculate_parametric_var(connection, portfolio, 0.95))
+        # print("Parametric VaR:", calculate_parametric_var(connection, portfolio, 0.95))
+
+        #print(get_price_data(connection, "AAPL"))
 
 
 if __name__ == "__main__":
