@@ -58,6 +58,21 @@ def _prepare_var_data(connection: sqlite3.Connection, portfolio: Portfolio) -> T
 
 
 def calculate_historical_var(connection: sqlite3.Connection, portfolio: Portfolio, confidence_interval: float = 0.95) -> float:
+    """Calculate the historical Value at Risk (VaR) for a portfolio
+    
+    Uses historical portfolio returns to estimate the maximum expected loss at a given confidence level over the historical period.
+    
+    Args:
+        connection: Active SQLite database connection containing historical price data.
+        portfolio: Portfolio object containing assets and weights.
+        confidence_interval: Confidence level (0 < c < 1) for the calculation. Defaults to 0.95.
+
+    Returns:
+        The estimated maximum loss (>= 0.0) at the given confidence level.
+
+    Raises:
+        ValueError: If the confidence interval is invalid or if there are insufficient historical returns to compute VaR.
+    """
 
     _validate_confidence_interval(confidence_interval)
 
@@ -74,6 +89,23 @@ def calculate_historical_var(connection: sqlite3.Connection, portfolio: Portfoli
 
 
 def calculate_parametric_var(connection: sqlite3.Connection, portfolio: Portfolio, confidence_interval: float = 0.95) -> float:
+    """Calculate the parametric (variance-covariance) Value at Risk (VaR) for a portfolio
+    
+    Assumes portfolio returns follow a normal distribution, using the historical 
+    mean and volatility to estimate the maximum expected loss at a given 
+    confidence level.
+    
+    Args:
+        connection: Active SQLite database connection containing historical price data.
+        portfolio: Portfolio object containing assets and weights.
+        confidence_interval: Confidence level (0 < c < 1) for the calculation. Defaults to 0.95.
+
+    Returns:
+        The estimated maximum loss (>= 0.0) at the given confidence level.
+
+    Raises:
+        ValueError: If the confidence interval is invalid or if there are insufficient historical returns to compute VaR.
+    """
 
     _validate_confidence_interval(confidence_interval)
 
