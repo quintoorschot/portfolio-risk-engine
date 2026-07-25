@@ -57,7 +57,11 @@ def _prepare_var_data(connection: sqlite3.Connection, portfolio: Portfolio) -> T
 
 
 
-def calculate_historical_var(connection: sqlite3.Connection, portfolio: Portfolio, confidence_interval: float = 0.95) -> float:
+def calculate_historical_var(
+        connection: sqlite3.Connection,
+        portfolio: Portfolio,
+        confidence_interval: float = 0.95
+    ) -> float:
     """Calculate the historical Value at Risk (VaR) for a portfolio
     
     Uses historical portfolio returns to estimate the maximum expected loss at a given confidence level over the historical period.
@@ -75,20 +79,22 @@ def calculate_historical_var(connection: sqlite3.Connection, portfolio: Portfoli
     """
 
     _validate_confidence_interval(confidence_interval)
-
     returns, current_portfolio_value = _prepare_var_data(connection, portfolio)
 
     if returns.empty:
         raise ValueError("Not enough returns to calculate VaR")
 
     return_at_risk: float = float(returns.quantile(1 - confidence_interval, interpolation="lower"))
-
     value_at_risk: float = max(0.0, -current_portfolio_value * return_at_risk)
 
     return value_at_risk
 
 
-def calculate_parametric_var(connection: sqlite3.Connection, portfolio: Portfolio, confidence_interval: float = 0.95) -> float:
+def calculate_parametric_var(
+        connection: sqlite3.Connection,
+        portfolio: Portfolio,
+        confidence_interval: float = 0.95
+    ) -> float:
     """Calculate the parametric (variance-covariance) Value at Risk (VaR) for a portfolio
     
     Assumes portfolio returns follow a normal distribution, using the historical 
@@ -110,7 +116,6 @@ def calculate_parametric_var(connection: sqlite3.Connection, portfolio: Portfoli
     _validate_confidence_interval(confidence_interval)
 
     returns, current_portfolio_value = _prepare_var_data(connection, portfolio)
-
     mean_return, volatility = returns.mean(), returns.std()
 
     current_portfolio_value: float = sum(
@@ -119,7 +124,6 @@ def calculate_parametric_var(connection: sqlite3.Connection, portfolio: Portfoli
     )
 
     z_index: float = float(norm.ppf(confidence_interval))
-
     value_at_risk: float = current_portfolio_value * (z_index * volatility - mean_return)
 
     return value_at_risk
