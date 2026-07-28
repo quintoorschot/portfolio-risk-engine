@@ -7,16 +7,16 @@ import numpy as np
 import sqlite3
 
 
-def _validate_confidence_interval(confidence_interval: float) -> None:
+def _validate_confidence_level(confidence_level: float) -> None:
 
-    if not 0 < confidence_interval < 1:
-        raise ValueError(f"[ERROR]: confidence interval ({confidence_interval}) should be between 0 and 1!")
+    if not 0 < confidence_level < 1:
+        raise ValueError(f"[ERROR]: confidence level ({confidence_level}) should be between 0 and 1!")
 
 
 def calculate_historical_var(
         connection: sqlite3.Connection,
         portfolio: Portfolio,
-        confidence_interval: float = 0.95
+        confidence_level: float = 0.95
     ) -> float:
     """Calculate the historical Value at Risk (VaR) for a portfolio
     
@@ -25,16 +25,16 @@ def calculate_historical_var(
     Args:
         connection: Active SQLite database connection containing historical price data.
         portfolio: Portfolio object containing assets and weights.
-        confidence_interval: Confidence level (0 < c < 1) for the calculation. Defaults to 0.95.
+        confidence_level: Confidence level (0 < c < 1) for the calculation. Defaults to 0.95.
 
     Returns:
         The estimated maximum loss (>= 0.0) at the given confidence level.
 
     Raises:
-        ValueError: If the confidence interval is invalid or if there are insufficient historical returns to compute VaR.
+        ValueError: If the confidence level is invalid or if there are insufficient historical returns to compute VaR.
     """
 
-    _validate_confidence_interval(confidence_interval)
+    _validate_confidence_level(confidence_level)
 
     prices: pd.DataFrame = get_price_data(connection, [position.instrument_id for position in portfolio])
     
@@ -54,7 +54,7 @@ def calculate_historical_var(
     losses: pd.Series = -scenario_pnl
 
     value_at_risk: float = float(
-        losses.quantile(confidence_interval, interpolation="higher")
+        losses.quantile(confidence_level, interpolation="higher")
     )
 
     return value_at_risk
@@ -63,7 +63,7 @@ def calculate_historical_var(
 def calculate_parametric_var(
         connection: sqlite3.Connection,
         portfolio: Portfolio,
-        confidence_interval: float = 0.95
+        confidence_level: float = 0.95
     ) -> float:
     """Calculate the parametric (variance-covariance) Value at Risk (VaR) for a portfolio
     
@@ -74,16 +74,16 @@ def calculate_parametric_var(
     Args:
         connection: Active SQLite database connection containing historical price data.
         portfolio: Portfolio object containing assets and weights.
-        confidence_interval: Confidence level (0 < c < 1) for the calculation. Defaults to 0.95.
+        confidence_level: Confidence level (0 < c < 1) for the calculation. Defaults to 0.95.
 
     Returns:
         The estimated maximum loss (>= 0.0) at the given confidence level.
 
     Raises:
-        ValueError: If the confidence interval is invalid or if there are insufficient historical returns to compute VaR.
+        ValueError: If the confidence level is invalid or if there are insufficient historical returns to compute VaR.
     """
 
-    _validate_confidence_interval(confidence_interval)
+    _validate_confidence_level(confidence_level)
 
     prices: pd.DataFrame = get_price_data(connection, [position.instrument_id for position in portfolio])
 
@@ -104,7 +104,7 @@ def calculate_parametric_var(
     mean_pnl: float = float(historical_pnl.mean())
     pnl_volatility: float = float(historical_pnl.std(ddof=1))
 
-    z_score: float = float(norm.ppf(confidence_interval))
+    z_score: float = float(norm.ppf(confidence_level))
 
     value_at_risk: float = z_score * pnl_volatility - mean_pnl
 
