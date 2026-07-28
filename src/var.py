@@ -13,50 +13,6 @@ def _validate_confidence_interval(confidence_interval: float) -> None:
         raise ValueError(f"[ERROR]: confidence interval ({confidence_interval}) should be between 0 and 1!")
 
 
-def _prepare_var_data(connection: sqlite3.Connection, portfolio: Portfolio) -> Tuple[pd.Series, float]:
-
-    quantities = pd.Series(
-        {
-            position.instrument_id: position.quantity
-            for position in portfolio
-        },
-        dtype=float,
-    )
-
-    prices: pd.DataFrame = (
-        pd.concat(
-            (
-                get_price_data(connection, [position.instrument_id])
-                for position in portfolio
-            ),
-            ignore_index=True,
-        )
-        .pivot(
-            index='price_date',
-            columns='instrument_id',
-            values='market_price',
-        )
-        .reindex(columns=quantities.index).dropna()
-    )
-
-    if len(prices) < 2:
-        raise ValueError("[ERROR] Not enough price history to calculate VaR!")
-
-    historical_total_values: pd.Series = prices.mul(quantities, axis="columns").sum(axis=1)
-    returns: pd.Series = historical_total_values.apply(np.log).diff().dropna()
-
-    if returns.empty:
-        raise ValueError("Not enough returns to calculate VaR")
-
-    current_portfolio_value: float = sum(
-        position.market_price * position.quantity
-        for position in portfolio
-    )
-
-    return returns, current_portfolio_value
-
-
-
 def calculate_historical_var(
         connection: sqlite3.Connection,
         portfolio: Portfolio,
@@ -129,15 +85,27 @@ def calculate_parametric_var(
 
     _validate_confidence_interval(confidence_interval)
 
-    returns, current_portfolio_value = _prepare_var_data(connection, portfolio)
-    mean_return, volatility = returns.mean(), returns.std()
+    prices: pd.DataFrame = get_price_data(connection, [position.instrument_id for position in portfolio])
 
-    current_portfolio_value: float = sum(
-        position.market_price * position.quantity
-        for position in portfolio
+    if len(prices) < 2:
+        raise ValueError("[ERROR] Not enough price history to calculate VaR!")
+
+    returns: pd.DataFrame = prices.pct_change().dropna()
+    current_exposures: pd.Series = pd.Series(
+        {
+            position.instrument_id: position.quantity * position.market_price
+            for position in portfolio
+        },
+        dtype=float,
     )
 
-    z_index: float = float(norm.ppf(confidence_interval))
-    value_at_risk: float = current_portfolio_value * (z_index * volatility - mean_return)
+    historical_pnl: pd.Series = returns.mul(current_exposures, axis="columns").sum(axis=1)
+
+    mean_pnl: float = float(historical_pnl.mean())
+    pnl_volatility: float = float(historical_pnl.std(ddof=1))
+
+    z_score: float = float(norm.ppf(confidence_interval))
+
+    value_at_risk: float = z_score * pnl_volatility - mean_pnl
 
     return value_at_risk
