@@ -16,12 +16,9 @@ def main() -> None:
         load_price_data(connection, TICKERS)
 
         portfolio: Portfolio = Portfolio(connection, "DEMO")
-        # print(portfolio.positions, "\n")
 
-        print("Historical VaR:", calculate_historical_var(connection, portfolio, 0.95))
-        # print("Parametric VaR:", calculate_parametric_var(connection, portfolio, 0.95))
-
-        #print(get_price_data(connection, "AAPL"))
+        print("Historical VaR (95%, 1 day):", calculate_historical_var(connection, portfolio, 0.95))
+        print("Parametric VaR (95%, 1 day):", calculate_parametric_var(connection, portfolio, 0.95))
 
 
 if __name__ == "__main__":
