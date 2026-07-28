@@ -50,8 +50,8 @@ def calculate_historical_var(
         dtype=float,
     )
 
-    scenario_pnl: pd.Series = returns.mul(current_exposures, axis="columns").sum(axis=1)
-    losses: pd.Series = -scenario_pnl
+    historical_pnl: pd.Series = returns.mul(current_exposures, axis="columns").sum(axis=1)
+    losses: pd.Series = -historical_pnl
 
     value_at_risk: float = float(
         losses.quantile(confidence_level, interpolation="higher")
