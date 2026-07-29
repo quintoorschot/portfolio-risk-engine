@@ -6,6 +6,7 @@ import sqlite3
 
 
 def _validate_confidence_level(confidence_level: float) -> None:
+    "Validate if given confidence level C is within valid bounds (0 < C < 1)"
 
     if not 0 < confidence_level < 1:
         raise ValueError(f"[ERROR]: confidence level ({confidence_level}) should be between 0 and 1!")
@@ -15,6 +16,7 @@ def _get_historical_pnl(
         connection: sqlite3.Connection,
         portfolio: Portfolio
     ) -> pd.DataFrame:
+    """Calculate hypothetical PnL for historical returns given current exposures"""
 
     prices: pd.DataFrame = get_price_data(connection, [position.instrument_id for position in portfolio])
 
