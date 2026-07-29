@@ -2,6 +2,7 @@ from src.market_data import get_price_data
 from src.dataclasses.Portfolio import Portfolio
 from scipy.stats import norm
 import pandas as pd
+import numpy as np
 import sqlite3
 
 
@@ -16,7 +17,7 @@ def _get_historical_pnl(
         connection: sqlite3.Connection,
         portfolio: Portfolio
     ) -> pd.DataFrame:
-    """Calculate hypothetical PnL for historical returns given current exposures"""
+    """Calculate hypothetical daily PnL for historical returns given current exposures"""
 
     prices: pd.DataFrame = get_price_data(connection, [position.instrument_id for position in portfolio])
 
@@ -40,7 +41,8 @@ def _get_historical_pnl(
 def calculate_historical_var(
         connection: sqlite3.Connection,
         portfolio: Portfolio,
-        confidence_level: float = 0.95
+        confidence_level: float = 0.95,
+        horizon_days: int = 1
     ) -> float:
     """Calculate the historical Value at Risk (VaR) for a portfolio
     
@@ -60,7 +62,15 @@ def calculate_historical_var(
 
     _validate_confidence_level(confidence_level)
 
-    historical_pnl: pd.Series = _get_historical_pnl(connection, portfolio)
+    daily_pnl: pd.Series = _get_historical_pnl(connection, portfolio)
+
+    historical_pnl: pd.Series = (
+        daily_pnl
+        .rolling(window=horizon_days)
+        .sum()
+        .dropna()
+    )
+
     losses: pd.Series = -historical_pnl
 
     value_at_risk: float = float(
@@ -73,7 +83,8 @@ def calculate_historical_var(
 def calculate_parametric_var(
         connection: sqlite3.Connection,
         portfolio: Portfolio,
-        confidence_level: float = 0.95
+        confidence_level: float = 0.95,
+        horizon_days: int = 1
     ) -> float:
     """Calculate the parametric (variance-covariance) Value at Risk (VaR) for a portfolio
     
@@ -85,6 +96,7 @@ def calculate_parametric_var(
         connection: Active SQLite database connection containing historical price data.
         portfolio: Portfolio object containing assets and weights.
         confidence_level: Confidence level (0 < c < 1) for the calculation. Defaults to 0.95.
+        horizon_days: number of trading days over which we calculate the VaR.
 
     Returns:
         The estimated maximum loss (>= 0.0) at the given confidence level.
@@ -95,13 +107,15 @@ def calculate_parametric_var(
 
     _validate_confidence_level(confidence_level)
 
-    historical_pnl: pd.Series = _get_historical_pnl(connection, portfolio)
+    daily_pnl: pd.Series = _get_historical_pnl(connection, portfolio)
 
-    mean_pnl: float = float(historical_pnl.mean())
-    pnl_volatility: float = float(historical_pnl.std(ddof=1))
+    mean_daily_pnl: float = float(daily_pnl.mean())
+    pnl_daily_volatility: float = float(daily_pnl.std(ddof=1))
 
     z_score: float = float(norm.ppf(confidence_level))
 
-    value_at_risk: float = z_score * pnl_volatility - mean_pnl
+    daily_value_at_risk: float = z_score * pnl_daily_volatility - mean_daily_pnl
+
+    value_at_risk: float = daily_value_at_risk * np.sqrt(horizon_days)
 
     return value_at_risk

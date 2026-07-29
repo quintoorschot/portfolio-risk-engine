@@ -17,8 +17,8 @@ def main() -> None:
 
         portfolio: Portfolio = Portfolio(connection, "DEMO")
 
-        print("Historical VaR (95%, 1 day):", calculate_historical_var(connection, portfolio, 0.95))
-        print("Parametric VaR (95%, 1 day):", calculate_parametric_var(connection, portfolio, 0.95))
+        print("Historical VaR (95%, 1 day):", calculate_historical_var(connection, portfolio, confidence_level=0.95, horizon_days=1))
+        print("Parametric VaR (95%, 1 day):", calculate_parametric_var(connection, portfolio, confidence_level=0.95, horizon_days=1))
 
 
 if __name__ == "__main__":
