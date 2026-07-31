@@ -30,20 +30,23 @@ def backtest_historical_var(
         connection,
         quantities.index.tolist(),
     )
-    returns: pd.DataFrame = prices.pct_change().dropna()
+    returns: pd.DataFrame = prices.pct_change()
 
     result = []
     backtest_summary: VaRBacktestSummary = None
     for i in range(window + 1, len(prices)):
-        historical_returns: pd.DataFrame = returns.iloc[i - window:i]
+        historical_returns: pd.DataFrame = returns.iloc[i - window:i].dropna()
 
-        previous_prices: pd.DataFrame = prices.iloc[i - 1]
-        current_prices: pd.DataFrame = prices.iloc[i]
+        previous_prices: pd.Series = prices.iloc[i - 1]
+        current_prices: pd.Series = prices.iloc[i]
 
         exposures: pd.Series = quantities * previous_prices
-        historical_pnl: pd.Series = historical_returns.mul(exposures, axis="columns")
+        historical_pnl: pd.Series = historical_returns.mul(exposures, axis="columns").sum(axis="columns")
 
-        value_at_risk: float = -historical_pnl.quantile(1 - confidence_level).sum()
+        value_at_risk: float = calculate_historical_var(
+            historical_pnl,
+            confidence_level
+        )
         actual_pnl: float = ((current_prices - previous_prices) * quantities).sum()
 
         exception: bool = actual_pnl < -value_at_risk
