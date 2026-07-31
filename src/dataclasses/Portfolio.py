@@ -6,6 +6,8 @@ from typing import List, Any
 import pandas as pd
 import sqlite3
 
+from src.new_var import calculate_historical_var
+
 @dataclass
 class Portfolio:
 
@@ -24,6 +26,10 @@ class Portfolio:
         """
         self.portfolio_name, self.base_currency = pd.read_sql_query(query, self.connection, params=(self.portfolio_id,)).iloc[0]
         self.positions = self._fetch_positions()
+
+
+    def historical_var(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
+        return calculate_historical_var(self._get_historical_pnl(self.connection), confidence_level, horizon_days)
 
 
     def __iter__(self) -> Iterator[Position]:

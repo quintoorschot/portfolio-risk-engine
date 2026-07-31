@@ -21,9 +21,7 @@ def main() -> None:
 
         portfolio: Portfolio = Portfolio(connection, "DEMO")
 
-        daily_pnl: pd.Series = portfolio._get_historical_pnl(connection)
-
-        print("Historical VaR (95%, 1 day):", calculate_historical_var(daily_pnl, confidence_level=0.95, horizon_days=1))
+        print("Historical VaR (95%, 1 day):", portfolio.historical_var())
         # print("Parametric VaR (95%, 1 day):", calculate_parametric_var(connection, portfolio, confidence_level=0.95, horizon_days=1))
 
         # backtest_summary: VaRBacktestSummary = backtest_historical_var(connection, portfolio)

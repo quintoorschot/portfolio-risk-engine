@@ -24,7 +24,9 @@ def calculate_historical_var(
     if not 0 < confidence_level < 1:
         raise ValueError("[ERROR]: confidence level should be in a valid range (i.e. 0 < c < 1)!")
 
-    value_at_risk: float = -float(daily_pnl.quantile(1 - confidence_level))
+    horizon_pnl: pd.Series = daily_pnl.rolling(window=horizon_days).sum().dropna()
+
+    value_at_risk: float = -float(horizon_pnl.quantile(1 - confidence_level))
     value_at_risk = max(value_at_risk, 0.0)
 
     return value_at_risk
