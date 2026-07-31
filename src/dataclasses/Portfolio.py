@@ -51,3 +51,26 @@ class Portfolio:
             )
             for row in rows
         ]
+
+
+    def _get_historical_pnl(self, connection: sqlite3.Connection) -> pd.Series:
+
+        prices: pd.DataFrame = get_price_data(connection, [position.instrument_id for position in self])
+        returns: pd.DataFrame = prices.pct_change().dropna()
+
+        current_exposures = pd.Series(
+            {
+                position.instrument_id: position.quantity * position.market_price
+                for position in self
+            },
+            dtype=float
+        )
+
+        if len(prices) < 2:
+            raise ValueError("[ERROR]: Not enough price history to calculate VaR!")
+
+        return (
+            returns
+            .mul(current_exposures, axis="columns")
+            .sum(axis="columns")
+        )
