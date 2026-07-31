@@ -21,8 +21,8 @@ def main() -> None:
 
         portfolio: Portfolio = Portfolio(connection, "DEMO")
 
-        print("Historical VaR (95%, 1 day):", portfolio.historical_var())
-        # print("Parametric VaR (95%, 1 day):", calculate_parametric_var(connection, portfolio, confidence_level=0.95, horizon_days=1))
+        # print("Historical VaR (95%, 1 day):", portfolio.historical_var())
+        print("Parametric VaR (95%, 1 day):", portfolio.parametric_var(confidence_level=0.95, horizon_days=1))
 
         # backtest_summary: VaRBacktestSummary = backtest_historical_var(connection, portfolio)
         # print(backtest_summary)

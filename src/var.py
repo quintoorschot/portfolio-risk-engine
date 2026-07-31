@@ -1,52 +1,15 @@
-from src.market_data import get_price_data
-from src.dataclasses.Portfolio import Portfolio
 from scipy.stats import norm
 import pandas as pd
 import numpy as np
-import sqlite3
-
-
-def _validate_confidence_level(confidence_level: float) -> None:
-    "Validate if given confidence level C is within valid bounds (0 < C < 1)"
-
-    if not 0 < confidence_level < 1:
-        raise ValueError(f"[ERROR]: confidence level ({confidence_level}) should be between 0 and 1!")
-
-
-def _get_historical_pnl(
-        connection: sqlite3.Connection,
-        portfolio: Portfolio
-    ) -> pd.DataFrame:
-    """Calculate hypothetical daily PnL for historical returns given current exposures"""
-
-    prices: pd.DataFrame = get_price_data(connection, [position.instrument_id for position in portfolio])
-
-    if len(prices) < 2:
-        raise ValueError("[ERROR] Not enough price history to calculate VaR!")
-
-    returns: pd.DataFrame = prices.pct_change().dropna()
-    current_exposures: pd.Series = pd.Series(
-        {
-            position.instrument_id: position.quantity * position.market_price
-            for position in portfolio
-        },
-        dtype=float,
-    )
-
-    historical_pnl: pd.Series = returns.mul(current_exposures, axis="columns").sum(axis=1)
-
-    return historical_pnl
-
 
 def calculate_historical_var(
-        connection: sqlite3.Connection,
-        portfolio: Portfolio,
+        daily_pnl: pd.Series,
         confidence_level: float = 0.95,
-        horizon_days: int = 1
+        horizon_days: int = 1,
     ) -> float:
-    """Calculate the historical Value at Risk (VaR) for a portfolio
+    """Calculate the historical Value at Risk (VaR) for P&L data
     
-    Uses historical portfolio returns to estimate the maximum expected loss at a given confidence level over the historical period.
+    Uses historical P&L data to estimate the maximum expected loss at a given confidence level over the historical period.
     
     Args:
         connection: Active SQLite database connection containing historical price data.
@@ -60,31 +23,21 @@ def calculate_historical_var(
         ValueError: If the confidence level is invalid or if there are insufficient historical returns to compute VaR.
     """
 
-    _validate_confidence_level(confidence_level)
+    if not 0 < confidence_level < 1:
+        raise ValueError("[ERROR]: confidence level should be in a valid range (i.e. 0 < c < 1)!")
 
-    daily_pnl: pd.Series = _get_historical_pnl(connection, portfolio)
+    horizon_pnl: pd.Series = daily_pnl.rolling(window=horizon_days).sum().dropna()
 
-    historical_pnl: pd.Series = (
-        daily_pnl
-        .rolling(window=horizon_days)
-        .sum()
-        .dropna()
-    )
-
-    losses: pd.Series = -historical_pnl
-
-    value_at_risk: float = float(
-        losses.quantile(confidence_level, interpolation="higher")
-    )
+    value_at_risk: float = -float(horizon_pnl.quantile(1 - confidence_level))
+    value_at_risk = max(value_at_risk, 0.0)
 
     return value_at_risk
 
 
 def calculate_parametric_var(
-        connection: sqlite3.Connection,
-        portfolio: Portfolio,
+        daily_pnl: pd.Series,
         confidence_level: float = 0.95,
-        horizon_days: int = 1
+        horizon_days: int = 1,
     ) -> float:
     """Calculate the parametric (variance-covariance) Value at Risk (VaR) for a portfolio
     
@@ -105,16 +58,15 @@ def calculate_parametric_var(
         ValueError: If the confidence level is invalid or if there are insufficient historical returns to compute VaR.
     """
 
-    _validate_confidence_level(confidence_level)
+    if not 0 < confidence_level < 1:
+        raise ValueError("[ERROR]: confidence level should be in a valid range (i.e. 0 < c < 1)!")
 
-    daily_pnl: pd.Series = _get_historical_pnl(connection, portfolio)
-
-    mean_daily_pnl: float = float(daily_pnl.mean())
-    pnl_daily_volatility: float = float(daily_pnl.std(ddof=1))
+    daily_pnl_mean: float = daily_pnl.mean()
+    daily_pnl_volatility: float = daily_pnl.std()
 
     z_score: float = float(norm.ppf(confidence_level))
 
-    daily_value_at_risk: float = z_score * pnl_daily_volatility - mean_daily_pnl
+    daily_value_at_risk: float = z_score * daily_pnl_volatility - daily_pnl_mean
 
     value_at_risk: float = daily_value_at_risk * np.sqrt(horizon_days)
 
