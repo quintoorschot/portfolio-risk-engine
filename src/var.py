@@ -65,8 +65,6 @@ def calculate_parametric_var(
 
     z_score: float = float(norm.ppf(confidence_level))
 
-    daily_value_at_risk: float = z_score * daily_pnl_volatility - daily_pnl_mean
-
-    value_at_risk: float = daily_value_at_risk * np.sqrt(horizon_days)
+    value_at_risk: float = z_score * np.sqrt(horizon_days) * daily_pnl_volatility - daily_pnl_mean * horizon_days
 
     return value_at_risk
