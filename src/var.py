@@ -12,9 +12,9 @@ def calculate_historical_var(
     Uses historical P&L data to estimate the maximum expected loss at a given confidence level over the historical period.
     
     Args:
-        connection: Active SQLite database connection containing historical price data.
-        portfolio: Portfolio object containing assets and weights.
-        confidence_level: Confidence level (0 < c < 1) for the calculation. Defaults to 0.95.
+        daily_pnl: Series of historical daily profit-and-loss observations.
+        confidence_level: Confidence level for the VaR calculation. Must satisfy 0 < confidence_level < 1. Defaults to 0.95.
+        horizon_days: Number of trading days over which to calculate VaR. Must be a positive integer. Defaults to 1.
 
     Returns:
         The estimated maximum loss (>= 0.0) at the given confidence level.
@@ -46,10 +46,9 @@ def calculate_parametric_var(
     confidence level.
     
     Args:
-        connection: Active SQLite database connection containing historical price data.
-        portfolio: Portfolio object containing assets and weights.
-        confidence_level: Confidence level (0 < c < 1) for the calculation. Defaults to 0.95.
-        horizon_days: number of trading days over which we calculate the VaR.
+        daily_pnl: Series of historical daily profit-and-loss observations.
+        confidence_level: Confidence level for the VaR calculation. Must satisfy 0 < confidence_level < 1. Defaults to 0.95.
+        horizon_days: Number of trading days over which to calculate VaR. Must be a positive integer. Defaults to 1.
 
     Returns:
         The estimated maximum loss (>= 0.0) at the given confidence level.
