@@ -21,6 +21,7 @@ def main() -> None:
 
         backtest_summary: VaRBacktestSummary = backtest_parametric_var(connection, portfolio)
         print(backtest_summary)
+        print(backtest_summary.kupiec_test())
 
 
 if __name__ == "__main__":
