@@ -93,7 +93,6 @@ def backtest_parametric_var(
     returns: pd.DataFrame = prices.pct_change()
 
     result = []
-    backtest_summary: VaRBacktestSummary = None
     for i in range(window + 1, len(prices)):
         historical_returns: pd.DataFrame = returns.iloc[i - window:i].dropna()
 
