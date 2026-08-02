@@ -18,6 +18,18 @@ This project provides a foundation for exploring common quantitative risk-manage
 - **Risk-model backtesting**
 - **VaR exception analysis**
 
+## 🗂️ Project Structure
+\[WILL FOLLOW LATER\]
+
+## ⚙️ Installation
+\[WILL FOLLOW LATER\]
+
+## 🚀 Usage
+\[WILL FOLLOW LATER\]
+
+## 💡 Example
+\[WILL FOLLOW LATER\]
+
 ## ⚠️ Disclaimer
 
 This project is intended for educational, research, and experimental purposes.
