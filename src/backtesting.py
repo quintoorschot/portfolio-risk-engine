@@ -120,6 +120,4 @@ def backtest_parametric_var(
             )
         )
 
-    backtest_summary: VaRBacktestSummary = VaRBacktestSummary(result, confidence_level)
-
-    return backtest_summary
+    return VaRBacktestSummary(result, confidence_level)
