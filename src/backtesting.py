@@ -11,13 +11,13 @@ def backtest_historical_var(
         confidence_level: float = 0.95,
         window: int = 250,
     ) -> VaRBacktestSummary:
-    """One-day historical VaR backtest."""
+    """Historical VaR backtest."""
 
     if not 0 < confidence_level < 1:
-        raise ValueError("confidence_level must be between 0 and 1")
+        raise ValueError(f"[ERROR]: Confidence_level ({confidence_level}) must be between 0 and 1!")
 
     if window < 2:
-        raise ValueError("window must be at least 2")
+        raise ValueError(f"[ERROR]: Window ({window}) must be at least 2!")
 
     quantities: pd.Series = pd.Series(
         {
@@ -72,10 +72,10 @@ def backtest_parametric_var(
     """One-day parametric (variance-covariance) VaR backtest."""
 
     if not 0 < confidence_level < 1:
-        raise ValueError("confidence_level must be between 0 and 1")
+        raise ValueError(f"[ERROR]: Confidence_level ({confidence_level}) must be between 0 and 1!")
 
     if window < 2:
-        raise ValueError("window must be at least 2")
+        raise ValueError(f"[ERROR]: Window ({window}) must be at least 2!")
 
     quantities: pd.Series = pd.Series(
         {
