@@ -10,6 +10,7 @@ def backtest_historical_var(
         portfolio: Portfolio,
         confidence_level: float = 0.95,
         window: int = 250,
+        horizon_days: int = 1,
     ) -> VaRBacktestSummary:
     """Historical VaR backtest."""
 
@@ -18,6 +19,9 @@ def backtest_historical_var(
 
     if window < 2:
         raise ValueError(f"[ERROR]: Window ({window}) must be at least 2!")
+
+    if horizon_days < 1:
+        raise ValueError(f"[ERROR]: Horizon_days ({horizon_days}) must be a non-negative integer!")
 
     quantities: pd.Series = pd.Series(
         {
@@ -33,21 +37,21 @@ def backtest_historical_var(
     returns: pd.DataFrame = prices.pct_change()
 
     result = []
-    backtest_summary: VaRBacktestSummary = None
-    for i in range(window + 1, len(prices)):
+    for i in range(window + 1, len(prices) - horizon_days + 1):
         historical_returns: pd.DataFrame = returns.iloc[i - window:i].dropna()
 
         previous_prices: pd.Series = prices.iloc[i - 1]
-        current_prices: pd.Series = prices.iloc[i]
+        future_prices: pd.Series = prices.iloc[i + horizon_days - 1]
 
         exposures: pd.Series = quantities * previous_prices
         historical_pnl: pd.Series = historical_returns.mul(exposures, axis="columns").sum(axis="columns")
 
         value_at_risk: float = calculate_historical_var(
             historical_pnl,
-            confidence_level
+            confidence_level,
+            horizon_days,
         )
-        actual_pnl: float = ((current_prices - previous_prices) * quantities).sum()
+        actual_pnl: float = ((future_prices - previous_prices) * quantities).sum()
 
         exception: bool = actual_pnl < -value_at_risk
 

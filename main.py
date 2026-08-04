@@ -19,9 +19,9 @@ def main() -> None:
         print("Historical VaR (95%, 1 day):", portfolio.historical_var())
         print("Parametric VaR (95%, 1 day):", portfolio.parametric_var())
 
-        backtest_summary: VaRBacktestSummary = backtest_parametric_var(connection, portfolio)
+        backtest_summary: VaRBacktestSummary = backtest_historical_var(connection, portfolio, horizon_days=50)
         print(backtest_summary)
-        print(backtest_summary.kupiec_test())
+        #print(backtest_summary.kupiec_test())
 
 
 if __name__ == "__main__":
