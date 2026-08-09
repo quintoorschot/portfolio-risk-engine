@@ -11,4 +11,5 @@ def test_historical_var() -> None:
         horizon_days=1,
     )
 
+    # We use the Pandas percentile function with interpolation, so we can end up with values in between actual PnL values.
     assert result == pytest.approx(6.0)
