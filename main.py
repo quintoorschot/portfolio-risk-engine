@@ -17,10 +17,13 @@ def main() -> None:
         portfolio: Portfolio = Portfolio(connection, "DEMO")
 
         print("Historical VaR (95%, 1 day):", portfolio.historical_var())
-        print("Parametric VaR (95%, 1 day):", portfolio.parametric_var())
+        print("Historical CVaR (95%, 1 day):", portfolio.historical_cvar())
 
-        backtest_summary: VaRBacktestSummary = backtest_parametric_var(connection, portfolio)
-        print(backtest_summary)
+
+        # print("Parametric VaR (95%, 1 day):", portfolio.parametric_var())
+
+        # backtest_summary: VaRBacktestSummary = backtest_parametric_var(connection, portfolio)
+        # print(backtest_summary)
         #print(backtest_summary.kupiec_test())
 
 

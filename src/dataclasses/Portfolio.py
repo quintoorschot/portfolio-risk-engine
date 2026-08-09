@@ -7,6 +7,7 @@ import pandas as pd
 import sqlite3
 
 from src.var import calculate_historical_var, calculate_parametric_var
+from src.cvar import calculate_historical_cvar
 
 @dataclass
 class Portfolio:
@@ -34,6 +35,9 @@ class Portfolio:
 
     def parametric_var(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
         return calculate_parametric_var(self._get_historical_pnl(self.connection), confidence_level, horizon_days)
+
+    def historical_cvar(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
+        return calculate_historical_cvar(self._get_historical_pnl(self.connection), confidence_level, horizon_days)
 
 
     def __iter__(self) -> Iterator[Position]:
