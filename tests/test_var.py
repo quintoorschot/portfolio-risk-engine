@@ -2,7 +2,7 @@ import pandas as pd
 from src.var import calculate_historical_var
 import pytest
 
-def test_historical_var_95_percent_confidence_1_day_horizon() -> None:
+def test_historical_var_80_percent_confidence_1_day_horizon() -> None:
     pnl: pd.Series = pd.Series([-10, -5, 0, 5, 10])
 
     result = calculate_historical_var(
