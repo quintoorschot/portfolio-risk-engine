@@ -30,10 +30,57 @@ class Portfolio:
 
 
     def historical_var(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
+        """Calculate the historical Value at Risk (VaR) for the portfolio.
+
+        Uses historical portfolio P&L observations to estimate the maximum expected
+        loss at a given confidence level over the specified holding period.
+
+        The portfolio P&L is calculated from historical market prices and current
+        portfolio exposures before applying the historical VaR methodology.
+
+        Args:
+            confidence_level: Confidence level for the VaR calculation. Must satisfy
+                0 < confidence_level < 1. Defaults to 0.95.
+            horizon_days: Number of trading days over which to calculate VaR. Must be
+                a positive integer. Defaults to 1.
+
+        Returns:
+            The estimated maximum portfolio loss (>= 0.0) at the given confidence
+            level.
+
+        Raises:
+            ValueError: If the confidence level is invalid, the horizon is invalid,
+                or there is insufficient historical price data to calculate VaR.
+        """
         return calculate_historical_var(self._get_historical_pnl(self.connection), confidence_level, horizon_days)
 
 
     def parametric_var(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
+        """Calculate the parametric Value at Risk (VaR) for the portfolio.
+
+        Uses the historical portfolio P&L distribution to estimate VaR under the
+        assumption that returns follow a normal distribution. The calculation is
+        based on the estimated portfolio mean return and volatility over the
+        specified holding period.
+
+        The portfolio P&L is calculated from historical market prices and current
+        portfolio exposures before applying the parametric VaR methodology.
+
+        Args:
+            confidence_level: Confidence level for the VaR calculation. Must satisfy
+                0 < confidence_level < 1. Defaults to 0.95.
+            horizon_days: Number of trading days over which to calculate VaR. Must be
+                a positive integer. Defaults to 1.
+
+        Returns:
+            The estimated maximum portfolio loss (>= 0.0) at the given confidence
+            level.
+
+        Raises:
+            ValueError: If the confidence level is invalid, the horizon is invalid,
+                or there is insufficient historical price data to estimate portfolio
+                volatility.
+        """
         return calculate_parametric_var(self._get_historical_pnl(self.connection), confidence_level, horizon_days)
 
     def historical_cvar(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
