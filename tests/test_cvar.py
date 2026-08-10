@@ -45,3 +45,39 @@ def test_historical_cvar_no_tail_losses() -> None:
     )
 
     assert result == 0.0
+
+
+# Test if the code correctly throws an error for invalid confidence levels
+@pytest.mark.parametrize(
+    "confidence_level",
+    [-0.1, 0, 1, 1.1],
+)
+def test_historical_cvar_invalid_confidence_level(
+    confidence_level: float,
+) -> None:
+    pnl: pd.Series = pd.Series([-25, -10, -5, 0, 10, 20])
+
+    with pytest.raises(ValueError):
+        calculate_historical_cvar(
+            pnl,
+            confidence_level=confidence_level,
+            horizon_days=1,
+        )
+
+
+# Test if the code correctly throws an error for invalid horizon days values
+@pytest.mark.parametrize(
+        "horizon_days",
+        [0, -1, -100, 0.5, 1.5]
+)
+def test_historical_cvar_invalid_horizon_days(
+    horizon_days
+) -> None:
+    pnl: pd.Series = pd.Series([-25, -10, -5, 0, 10, 20])
+
+    with pytest.raises(ValueError):
+        calculate_historical_cvar(
+            pnl,
+            confidence_level=0.95,
+            horizon_days=horizon_days,
+        )
