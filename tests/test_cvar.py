@@ -8,7 +8,7 @@ import pytest
 def test_historical_cvar_80_percent_confidence_1_day_horizon() -> None:
     pnl: pd.Series = pd.Series([-10, -5, -2, 1, 3])
 
-    result = calculate_historical_cvar(
+    result: float = calculate_historical_cvar(
         pnl,
         confidence_level=0.80,
         horizon_days=1,

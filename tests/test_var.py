@@ -8,7 +8,7 @@ import pytest
 def test_historical_var_80_percent_confidence_1_day_horizon() -> None:
     pnl: pd.Series = pd.Series([-10, -5, 0, 5, 10])
 
-    result = calculate_historical_var(
+    result: float = calculate_historical_var(
         pnl,
         confidence_level=0.8,
         horizon_days=1,
@@ -22,7 +22,7 @@ def test_historical_var_80_percent_confidence_1_day_horizon() -> None:
 def test_historical_var_95_percent_confidence_1_day_horizon() -> None:
     pnl: pd.Series = pd.Series([-100, -50, -25, -10, -5, 0, 5, 10, 20, 30])
 
-    result = calculate_historical_var(
+    result: float = calculate_historical_var(
         pnl,
         confidence_level=0.95,
         horizon_days=1,
@@ -34,7 +34,7 @@ def test_historical_var_95_percent_confidence_1_day_horizon() -> None:
 def test_historical_var_80_percent_confidence_3_day_horizon() -> None:
     pnl: pd.Series = pd.Series([-25, -10, -5, 0, 10, 20])
 
-    result = calculate_historical_var(
+    result: float = calculate_historical_var(
         pnl,
         confidence_level=0.80,
         horizon_days=3,
@@ -53,7 +53,7 @@ def test_historical_var_80_percent_confidence_3_day_horizon() -> None:
 def test_historical_var_all_zeros() -> None:
     pnl: pd.Series = pd.Series(np.zeros(10))
 
-    result = calculate_historical_var(
+    result: float = calculate_historical_var(
         pnl,
         confidence_level=0.95,
         horizon_days=1
@@ -119,7 +119,7 @@ def test_historical_var_insufficient_data(
 def test_parametric_var_95_percent_confidence_1_day_horizon() -> None:
     pnl: pd.Series = pd.Series([-2, -1, 0, 1, 2])
 
-    result = calculate_parametric_var(
+    result: float = calculate_parametric_var(
         pnl,
         confidence_level=0.95,
         horizon_days=1,
@@ -136,7 +136,7 @@ def test_parametric_var_95_percent_confidence_1_day_horizon() -> None:
 def test_parametric_var_80_percent_confidence_3_day_horizon() -> None:
     pnl: pd.Series = pd.Series([-25, -10, -5, 0, 10, 20])
 
-    result = calculate_parametric_var(
+    result: float = calculate_parametric_var(
         pnl,
         confidence_level=0.80,
         horizon_days=3,
@@ -153,7 +153,7 @@ def test_parametric_var_80_percent_confidence_3_day_horizon() -> None:
 def test_parametric_var_all_zeros() -> None:
     pnl: pd.Series = pd.Series(np.zeros(10))
 
-    result = calculate_parametric_var(
+    result: float = calculate_parametric_var(
         pnl,
         confidence_level=0.95,
         horizon_days=1,
