@@ -24,7 +24,7 @@ def calculate_historical_var(
     """
 
     if not 0 < confidence_level < 1:
-        raise ValueError("[ERROR]: confidence level should be in a valid range (i.e. 0 < c < 1)!")
+        raise ValueError(f"[ERROR]: Confidence level c ({confidence_level}) should be in a valid range (i.e. 0 < c < 1)!")
 
     if horizon_days < 1:
         raise ValueError(f"[ERROR]: Horizon days ({horizon_days}) should be a postive integer")
@@ -61,7 +61,7 @@ def calculate_parametric_var(
     """
 
     if not 0 < confidence_level < 1:
-        raise ValueError("[ERROR]: confidence level should be in a valid range (i.e. 0 < c < 1)!")
+        raise ValueError(f"[ERROR]: Confidence level c ({confidence_level}) should be in a valid range (i.e. 0 < c < 1)!")
 
     if horizon_days < 1:
         raise ValueError(f"[ERROR]: Horizon days ({horizon_days}) should be a postive integer")
