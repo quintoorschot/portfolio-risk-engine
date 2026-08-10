@@ -12,7 +12,7 @@ def test_historical_var_80_percent_confidence_1_day_horizon() -> None:
         horizon_days=1,
     )
 
-    # We use the Pandas percentile function with interpolation, so we can end up with values in-between actual PnL values.
+    # We use the Pandas percentile function with linear interpolation, so we can end up with values in-between actual PnL values.
     # 20th percentile = -6, therefore VaR = 6.
     assert result == pytest.approx(6.0)
 
