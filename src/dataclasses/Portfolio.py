@@ -144,6 +144,7 @@ class Portfolio:
 
 
     def _get_historical_pnl(self, connection: sqlite3.Connection) -> pd.Series:
+        """Calculates the portfolio's historical PnL by applying current position exposures to historical asset returns derived from price data."""
 
         prices: pd.DataFrame = get_price_data(connection, [position.instrument_id for position in self])
         returns: pd.DataFrame = prices.pct_change().dropna()
