@@ -29,6 +29,9 @@ def calculate_historical_var(
     if not isinstance(horizon_days, int) or horizon_days < 1:
         raise ValueError(f"[ERROR]: Horizon days ({horizon_days}) should be a postive integer")
 
+    if len(daily_pnl) < horizon_days:
+        raise ValueError(f"[ERROR]: Not enough observations to calculate historical VaR! The number of observations ({len(daily_pnl)}) should be larger than the value of horizon days ({horizon_days})!")
+
     horizon_pnl: pd.Series = daily_pnl.rolling(window=horizon_days).sum().dropna()
 
     value_at_risk: float = -float(horizon_pnl.quantile(1 - confidence_level))
