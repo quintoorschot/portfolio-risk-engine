@@ -52,7 +52,11 @@ class Portfolio:
             ValueError: If the confidence level is invalid, the horizon is invalid,
                 or there is insufficient historical price data to calculate VaR.
         """
-        return calculate_historical_var(self._get_historical_pnl(self.connection), confidence_level, horizon_days)
+        return calculate_historical_var(
+            daily_pnl = self._get_historical_pnl(self.connection),
+            confidence_level = confidence_level,
+            horizon_days = horizon_days
+        )
 
 
     def parametric_var(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
@@ -81,7 +85,11 @@ class Portfolio:
                 or there is insufficient historical price data to estimate portfolio
                 volatility.
         """
-        return calculate_parametric_var(self._get_historical_pnl(self.connection), confidence_level, horizon_days)
+        return calculate_parametric_var(
+            self._get_historical_pnl(self.connection),
+            confidence_level,
+            horizon_days
+        )
 
     def historical_cvar(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
         return calculate_historical_cvar(self._get_historical_pnl(self.connection), confidence_level, horizon_days)
