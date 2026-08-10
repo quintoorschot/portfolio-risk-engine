@@ -90,6 +90,29 @@ class Portfolio:
         )
 
     def historical_cvar(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
+        """Calculate the historical Conditional Value at Risk (CVaR) for PnL data.
+
+        Uses historical PnL observations to estimate the expected loss in the worst
+        cases beyond the Value at Risk (VaR) threshold. CVaR (or Expected
+        Shortfall) measures the average loss in the tail of the historical PnL
+        distribution at a given confidence level.
+
+        Args:
+            daily_pnl: Series of historical daily profit-and-loss observations.
+            confidence_level: Confidence level for the CVaR calculation. Must satisfy
+                0 < confidence_level < 1. Defaults to 0.95.
+            horizon_days: Number of trading days over which to calculate CVaR. Must be
+                a positive integer. Defaults to 1.
+
+        Returns:
+            The estimated expected loss beyond the VaR threshold (>= 0.0) at the
+            given confidence level.
+
+        Raises:
+            ValueError: If the confidence level is invalid, if there are insufficient
+                historical PnL observations to calculate CVaR, or if no valid tail
+                loss observations are available.
+        """
         return calculate_historical_cvar(
             self._get_historical_pnl(self.connection),
             confidence_level,
