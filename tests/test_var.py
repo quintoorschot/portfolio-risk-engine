@@ -80,6 +80,7 @@ def test_historical_var_invalid_confidence_level(
         )
 
 
+# Test if the code correctly throws an error for invalid horizon days values
 @pytest.mark.parametrize(
         "horizon_days",
         [0, -1, -100, 0.5, 1.5]
@@ -163,6 +164,7 @@ def test_parametric_var_invalid_confidence_level(
         )
 
 
+# Test if the code correctly throws an error for invalid horizon days values
 @pytest.mark.parametrize(
         "horizon_days",
         [0, -1, -100, 0.5, 1.5]
