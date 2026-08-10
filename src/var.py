@@ -26,7 +26,7 @@ def calculate_historical_var(
     if not 0 < confidence_level < 1:
         raise ValueError(f"[ERROR]: Confidence level c ({confidence_level}) should be in a valid range (i.e. 0 < c < 1)!")
 
-    if horizon_days < 1:
+    if not isinstance(horizon_days, int) or horizon_days < 1:
         raise ValueError(f"[ERROR]: Horizon days ({horizon_days}) should be a postive integer")
 
     horizon_pnl: pd.Series = daily_pnl.rolling(window=horizon_days).sum().dropna()
@@ -63,7 +63,7 @@ def calculate_parametric_var(
     if not 0 < confidence_level < 1:
         raise ValueError(f"[ERROR]: Confidence level c ({confidence_level}) should be in a valid range (i.e. 0 < c < 1)!")
 
-    if horizon_days < 1:
+    if not isinstance(horizon_days, int) or horizon_days < 1:
         raise ValueError(f"[ERROR]: Horizon days ({horizon_days}) should be a postive integer")
 
     daily_pnl_mean: float = daily_pnl.mean()

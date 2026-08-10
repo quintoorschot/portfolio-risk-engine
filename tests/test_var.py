@@ -80,6 +80,23 @@ def test_historical_var_invalid_confidence_level(
         )
 
 
+@pytest.mark.parametrize(
+        "horizon_days",
+        [0, -1, -100, 0.5, 1.5]
+)
+def test_historical_var_invalid_horizon_days(
+    horizon_days
+) -> None:
+    pnl: pd.Series = pd.Series([-25, -10, -5, 0, 10, 20])
+
+    with pytest.raises(ValueError):
+        calculate_historical_var(
+            pnl,
+            confidence_level=0.95,
+            horizon_days=horizon_days,
+        )
+
+
 # ============== Parametric VaR unit tests ============== #
 
 def test_parametric_var_95_percent_confidence_1_day_horizon() -> None:
@@ -143,4 +160,21 @@ def test_parametric_var_invalid_confidence_level(
             pnl,
             confidence_level=confidence_level,
             horizon_days=1,
+        )
+
+
+@pytest.mark.parametrize(
+        "horizon_days",
+        [0, -1, -100, 0.5, 1.5]
+)
+def test_parametric_var_invalid_horizon_days(
+    horizon_days
+) -> None:
+    pnl: pd.Series = pd.Series([-25, -10, -5, 0, 10, 20])
+
+    with pytest.raises(ValueError):
+        calculate_parametric_var(
+            pnl,
+            confidence_level=0.95,
+            horizon_days=horizon_days,
         )
