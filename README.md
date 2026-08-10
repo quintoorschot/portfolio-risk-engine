@@ -1,5 +1,5 @@
 # 📊 Portfolio Risk Engine
-**A Python-based application for measuring and analyzing financial portfolio risk.**
+**A Python-based tool for measuring and analyzing financial portfolio risk.**
 
 The project provides tools for loading market data, representing investment portfolios, calculating risk metrics, and evaluating risk models using historical observations.
 
