@@ -31,7 +31,7 @@ def test_historical_var_95_percent_confidence_1_day_horizon() -> None:
     assert result == pytest.approx(77.5)
 
 
-def test_historical_var_95_percent_confidence_3_day_horizon() -> None:
+def test_historical_var_80_percent_confidence_3_day_horizon() -> None:
     pnl: pd.Series = pd.Series([-25, -10, -5, 0, 10, 20])
 
     result = calculate_historical_var(
@@ -79,6 +79,23 @@ def test_parametric_var_95_percent_confidence_1_day_horizon() -> None:
     #
     # VaR = 1.64485 * sqrt(2.5) ≈ 2.6016
     assert result == pytest.approx(2.6016, rel=1e-3)
+
+
+def test_parametric_var_80_percent_confidence_3_day_horizon() -> None:
+    pnl: pd.Series = pd.Series([-25, -10, -5, 0, 10, 20])
+
+    result = calculate_parametric_var(
+        pnl,
+        confidence_level=0.80,
+        horizon_days=3,
+    )
+
+    # Mean ≈ -1.6667
+    # Sample std ≈ 15.7056
+    # z_80 = Φ^{-1}(0.80) ≈ 0.8416
+    #
+    # VaR = (0.8416 * 15.7056 * sqrt(3)) - (-1.6667)(3) ≈ 27.8941
+    assert result == pytest.approx(27.8941, rel=1e-3)
 
 
 def test_parametric_var_all_zeros() -> None:
