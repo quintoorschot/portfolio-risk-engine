@@ -63,37 +63,20 @@ def test_historical_var_all_zeros() -> None:
 
 
 # Test if the code correctly throws an error for invalid confidence levels
-def test_historical_var_invalid_confidence_level() -> None:
+@pytest.mark.parametrize(
+    "confidence_level",
+    [-0.1, 0, 1, 1.1],
+)
+def test_historical_var_invalid_confidence_level(
+    confidence_level: float,
+) -> None:
     pnl: pd.Series = pd.Series([-25, -10, -5, 0, 10, 20])
 
     with pytest.raises(ValueError):
-
-        # Confidence level below 0
-        calculate_parametric_var(
+        calculate_historical_var(
             pnl,
-            confidence_level=-0.1,
-            horizon_days=1
-        )
-
-        # Confidence level equal to 0
-        calculate_parametric_var(
-            pnl,
-            confidence_level=0,
-            horizon_days=1
-        )
-
-        # Confidence level equal to 1
-        calculate_parametric_var(
-            pnl,
-            confidence_level=1,
-            horizon_days=1
-        )
-
-        # Confidence level above 1
-        calculate_parametric_var(
-            pnl,
-            confidence_level=1.1,
-            horizon_days=1
+            confidence_level=confidence_level,
+            horizon_days=1,
         )
 
 
@@ -146,35 +129,18 @@ def test_parametric_var_all_zeros() -> None:
 
 
 # Test if the code correctly throws an error for invalid confidence levels
-def test_parametric_var_invalid_confidence_level() -> None:
+@pytest.mark.parametrize(
+    "confidence_level",
+    [-0.1, 0, 1, 1.1],
+)
+def test_parametric_var_invalid_confidence_level(
+    confidence_level: float,
+) -> None:
     pnl: pd.Series = pd.Series([-25, -10, -5, 0, 10, 20])
 
     with pytest.raises(ValueError):
-
-        # Confidence level below 0
         calculate_parametric_var(
             pnl,
-            confidence_level=-0.1,
-            horizon_days=1
-        )
-
-        # Confidence level equal to 0
-        calculate_parametric_var(
-            pnl,
-            confidence_level=0,
-            horizon_days=1
-        )
-
-        # Confidence level equal to 1
-        calculate_parametric_var(
-            pnl,
-            confidence_level=1,
-            horizon_days=1
-        )
-
-        # Confidence level above 1
-        calculate_parametric_var(
-            pnl,
-            confidence_level=1.1,
-            horizon_days=1
+            confidence_level=confidence_level,
+            horizon_days=1,
         )
