@@ -29,14 +29,15 @@ class Portfolio:
         self.positions = self._fetch_positions()
 
 
+    def __iter__(self) -> Iterator[Position]:
+        return iter(self.positions)
+
+
     def historical_var(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
         """Calculate the historical Value at Risk (VaR) for the portfolio.
 
-        Uses historical portfolio P&L observations to estimate the maximum expected
+        Uses historical portfolio PnL observations to estimate the maximum expected
         loss at a given confidence level over the specified holding period.
-
-        The portfolio P&L is calculated from historical market prices and current
-        portfolio exposures before applying the historical VaR methodology.
 
         Args:
             confidence_level: Confidence level for the VaR calculation. Must satisfy
@@ -62,13 +63,10 @@ class Portfolio:
     def parametric_var(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
         """Calculate the parametric Value at Risk (VaR) for the portfolio.
 
-        Uses the historical portfolio P&L distribution to estimate VaR under the
-        assumption that returns follow a normal distribution. The calculation is
+        Uses the historical portfolio PnL distribution to estimate the VaR under the
+        assumption that returns are sampled from a normal distribution. The calculation is
         based on the estimated portfolio mean return and volatility over the
         specified holding period.
-
-        The portfolio P&L is calculated from historical market prices and current
-        portfolio exposures before applying the parametric VaR methodology.
 
         Args:
             confidence_level: Confidence level for the VaR calculation. Must satisfy
@@ -92,11 +90,11 @@ class Portfolio:
         )
 
     def historical_cvar(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
-        return calculate_historical_cvar(self._get_historical_pnl(self.connection), confidence_level, horizon_days)
-
-
-    def __iter__(self) -> Iterator[Position]:
-        return iter(self.positions)
+        return calculate_historical_cvar(
+            self._get_historical_pnl(self.connection),
+            confidence_level,
+            horizon_days
+        )
 
 
     def _fetch_positions(self) -> List[Position]:
