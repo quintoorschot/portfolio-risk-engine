@@ -98,7 +98,7 @@ class Portfolio:
 
 
     def _fetch_positions(self) -> List[Position]:
-        """Fetches the position data from the database and stores it in the portfolio instance"""
+        """Fetches a portfolio's position data from the database and stores it in the portfolio instance"""
 
         query: str = """
             SELECT position_id, instrument_id, quantity, market_price
