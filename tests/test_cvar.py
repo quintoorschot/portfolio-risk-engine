@@ -21,7 +21,7 @@ def test_historical_cvar_single_tail_loss() -> None:
 
 
 def test_historical_cvar_multiple_tail_losses() -> None:
-    pnl = pd.Series([-20, -10, -5, 0, 5])
+    pnl: pd.Series = pd.Series([-20, -10, -5, 0, 5])
 
     result: float = calculate_historical_cvar(
         pnl,
@@ -33,3 +33,15 @@ def test_historical_cvar_multiple_tail_losses() -> None:
     # Tail losses: [-20, -10]
     # CVaR = -[(-20) + (-10)] / 2 = 15.0
     assert result == pytest.approx(15.0)
+
+
+def test_historical_cvar_no_tail_losses() -> None:
+    pnl: pd.Series = pd.Series([1, 2, 3, 4, 5])
+
+    result: float = calculate_historical_cvar(
+        pnl,
+        confidence_level=0.80,
+        horizon_days=1,
+    )
+
+    assert result == 0.0
