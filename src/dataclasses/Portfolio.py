@@ -11,6 +11,7 @@ from src.cvar import calculate_historical_cvar
 
 @dataclass
 class Portfolio:
+    """Represents an investment portfolio with positions and risk calculations."""
 
     connection: sqlite3.Connection
     portfolio_id: str
