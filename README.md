@@ -19,6 +19,40 @@ This project provides a foundation for exploring common quantitative risk-manage
 - **Risk-model backtesting**
 - **VaR exception analysis**
 
+## ⚙️ Installation
+
+### Clone the repository
+```bash
+git clone https://github.com/quintoorschot/portfolio-risk-engine.git
+cd portfolio-risk-engine
+```
+
+### Create a virtual environment
+#### Linux/MacOS
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+#### Windows
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+### Install dependencies
+Install the required Python packages:
+```bash
+pip install -r requirements.txt
+```
+
+### Verify installation (optional)
+Run the test suite to confirm that the installation was successful:
+```bash
+pytest
+```
+If all tests pass, the environment is ready for use.
+
 ## ⚠️ Disclaimer
 
 This project is intended for educational, research, and experimental purposes.
