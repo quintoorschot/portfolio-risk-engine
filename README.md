@@ -1,4 +1,4 @@
-# 📊 Portfolio Risk Engine (Work-in-progress)
+# 📊 Portfolio Risk Engine
 **A Python-based application for measuring and analyzing financial portfolio risk.**
 
 The project provides tools for loading market data, representing investment portfolios, calculating risk metrics, and evaluating risk models using historical observations.
@@ -12,23 +12,12 @@ Portfolio risk management focuses on estimating how much a portfolio could lose 
 This project provides a foundation for exploring common quantitative risk-management techniques, including:
 
 - **Value at Risk (VaR)**
+- **Condition Value at Risk (CVaR)**
 - **Historical portfolio analysis**
 - **Parametric risk estimation**
 - **Portfolio profit-and-loss calculation**
 - **Risk-model backtesting**
 - **VaR exception analysis**
-
-## 🗂️ Project Structure
-\[WILL FOLLOW LATER\]
-
-## ⚙️ Installation
-\[WILL FOLLOW LATER\]
-
-## 🚀 Usage
-\[WILL FOLLOW LATER\]
-
-## 💡 Example
-\[WILL FOLLOW LATER\]
 
 ## ⚠️ Disclaimer
 
