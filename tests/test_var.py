@@ -31,6 +31,25 @@ def test_historical_var_95_percent_confidence_1_day_horizon() -> None:
     assert result == pytest.approx(77.5)
 
 
+def test_historical_var_95_percent_confidence_3_day_horizon() -> None:
+    pnl: pd.Series = pd.Series([-25, -10, -5, 0, 10, 20])
+
+    result = calculate_historical_var(
+        pnl,
+        confidence_level=0.80,
+        horizon_days=3,
+    )
+
+    # Construct rolling 3-day PnLs:
+    # PnL_1 = (-25) + (-10) + (-5) = -40
+    # PnL_2 = (-10) + (-5) + 0 = -15
+    # PnL_3 = (-5) + 0 + 10
+    # PnL_4 = 0 + 10 + 20 = 30
+    #
+    # Calculate VaR on these PnLs
+    assert result == pytest.approx(25.0)
+
+
 def test_historical_var_all_zeros() -> None:
     pnl: pd.Series = pd.Series(np.zeros(10))
 
