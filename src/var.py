@@ -3,26 +3,6 @@ import pandas as pd
 import numpy as np
 
 
-def _validate_confidence_level(
-    confidence_level: float,
-) -> None:
-    if not 0 < confidence_level < 1:
-        raise ValueError(f"[ERROR]: Confidence level c ({confidence_level}) should be in a valid range (i.e. 0 < c < 1)!")
-
-def _validate_horizon_days(
-        horizon_days: int,
-) -> None:
-    if not isinstance(horizon_days, int) or horizon_days < 1:
-        raise ValueError(f"[ERROR]: Horizon days ({horizon_days}) should be a postive integer")
-
-def _validate_pnl_length(
-        daily_pnl: pd.Series,
-        horizon_days: int,
-) -> None:
-    if len(daily_pnl) < horizon_days:
-        raise ValueError(f"[ERROR]: Not enough observations to calculate historical VaR! The number of observations ({len(daily_pnl)}) should be larger than the value of horizon days ({horizon_days})!")
-
-
 def calculate_historical_var(
         daily_pnl: pd.Series,
         confidence_level: float = 0.95,
@@ -59,3 +39,23 @@ def calculate_parametric_var(
     value_at_risk: float = z_score * np.sqrt(horizon_days) * daily_pnl_volatility - daily_pnl_mean * horizon_days
 
     return value_at_risk
+
+
+def _validate_confidence_level(
+    confidence_level: float,
+) -> None:
+    if not 0 < confidence_level < 1:
+        raise ValueError(f"[ERROR]: Confidence level c ({confidence_level}) should be in a valid range (i.e. 0 < c < 1)!")
+
+def _validate_horizon_days(
+        horizon_days: int,
+) -> None:
+    if not isinstance(horizon_days, int) or horizon_days < 1:
+        raise ValueError(f"[ERROR]: Horizon days ({horizon_days}) should be a postive integer")
+
+def _validate_pnl_length(
+        daily_pnl: pd.Series,
+        horizon_days: int,
+) -> None:
+    if len(daily_pnl) < horizon_days:
+        raise ValueError(f"[ERROR]: Not enough observations to calculate historical VaR! The number of observations ({len(daily_pnl)}) should be larger than the value of horizon days ({horizon_days})!")
