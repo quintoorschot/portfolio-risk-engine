@@ -7,7 +7,7 @@ import pandas as pd
 import sqlite3
 
 from src.var import calculate_historical_var, calculate_parametric_var
-from src.cvar import calculate_historical_cvar
+from src.cvar import calculate_historical_cvar, calculate_parametric_cvar
 
 @dataclass
 class Portfolio:
@@ -90,6 +90,7 @@ class Portfolio:
             horizon_days
         )
 
+
     def historical_cvar(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
         """Calculate the historical Conditional Value at Risk (CVaR) for PnL data.
 
@@ -118,6 +119,14 @@ class Portfolio:
             self._get_historical_pnl(self.connection),
             confidence_level,
             horizon_days
+        )
+
+
+    def parametric_cvar(self, confidence_level: float = 0.95, horizon: int = 1) -> float:
+        return calculate_parametric_cvar(
+            self._get_historical_pnl(self.connection),
+            confidence_level,
+            horizon,
         )
 
 
