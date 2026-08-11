@@ -5,7 +5,7 @@ def calculate_historical_cvar(
         confidence_level: float = 0.95,
         horizon_days: int = 1,
     ) -> float:
-    """Calculate Conditional Value at Risk (CVaR)."""
+    """Calculate historical Conditional Value at Risk (CVaR)."""
 
     _validate_confidence_level(confidence_level)
     _validate_horizon_days(horizon_days)
@@ -36,6 +36,16 @@ def calculate_historical_cvar(
     cvar: float = -float(tail_losses.mean())
 
     return max(cvar, 0.0)
+
+
+def calculate_parametric_cvar(
+        daily_pnl: pd.Series,
+        confidence_level: float = 0.95,
+        horizon_days: int = 1,
+    ) -> float:
+    """Calculate parametric (variance-covariance) Conditional Value at Risk (CVaR)."""
+
+    ...
 
 
 def _validate_confidence_level(

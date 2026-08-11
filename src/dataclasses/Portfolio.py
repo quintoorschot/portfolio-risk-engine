@@ -62,7 +62,7 @@ class Portfolio:
 
 
     def parametric_var(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
-        """Calculate the parametric Value at Risk (VaR) for the portfolio.
+        """Calculate the parametric (variance-covariance) Value at Risk (VaR) for the portfolio.
 
         Uses the historical portfolio PnL distribution to estimate the VaR under the
         assumption that returns are sampled from a normal distribution. The calculation is
