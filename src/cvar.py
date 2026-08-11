@@ -1,4 +1,6 @@
+from scipy.stats import norm
 import pandas as pd
+import numpy as np
 
 def calculate_historical_cvar(
         daily_pnl: pd.Series,
@@ -45,7 +47,25 @@ def calculate_parametric_cvar(
     ) -> float:
     """Calculate parametric (variance-covariance) Conditional Value at Risk (CVaR)."""
 
-    ...
+    _validate_confidence_level(confidence_level)
+    _validate_horizon_days(horizon_days)
+    _validate_pnl_length(daily_pnl, 1)
+
+    daily_pnl_mean: float = daily_pnl.mean()
+    daily_pnl_volatility: float = daily_pnl.std()
+
+    horizon_mean: float = daily_pnl_mean * horizon_days
+    horizon_volatility: float = daily_pnl_volatility * np.sqrt(horizon_days)
+
+    z_score: float = float(norm.ppf(confidence_level))
+    pdf_z_score: float = float(norm.pdf(z_score))
+
+    cvar: float = (
+        horizon_volatility * pdf_z_score / (1 - confidence_level)
+        - horizon_mean
+    )
+
+    return max(float(cvar), 0.0)
 
 
 def _validate_confidence_level(
