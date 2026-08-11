@@ -29,7 +29,7 @@ def calculate_parametric_var(
 
     _validate_confidence_level(confidence_level)
     _validate_horizon_days(horizon_days)
-    _validate_pnl_length(daily_pnl, horizon_days)
+    _validate_pnl_length(daily_pnl, 1)
 
     daily_pnl_mean: float = daily_pnl.mean()
     daily_pnl_volatility: float = daily_pnl.std()
@@ -55,7 +55,7 @@ def _validate_horizon_days(
 
 def _validate_pnl_length(
         daily_pnl: pd.Series,
-        horizon_days: int,
+        minimum_length: int,
 ) -> None:
-    if len(daily_pnl) < horizon_days:
-        raise ValueError(f"[ERROR]: Not enough observations to calculate historical VaR! The number of observations ({len(daily_pnl)}) should be larger than the value of horizon days ({horizon_days})!")
+    if len(daily_pnl) < minimum_length:
+        raise ValueError(f"[ERROR]: Not enough observations to calculate VaR! The number of observations ({len(daily_pnl)}) is too small!")
