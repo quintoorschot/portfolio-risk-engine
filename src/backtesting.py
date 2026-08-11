@@ -6,12 +6,12 @@ from sqlite3 import Connection
 import pandas as pd
 
 def backtest_historical_var(
-        connection: Connection,
-        portfolio: Portfolio,
-        confidence_level: float = 0.95,
-        window: int = 250,
-        horizon_days: int = 1,
-    ) -> VaRBacktestSummary:
+    connection: Connection,
+    portfolio: Portfolio,
+    confidence_level: float = 0.95,
+    window: int = 250,
+    horizon_days: int = 1,
+) -> VaRBacktestSummary:
     """Historical VaR backtest."""
 
     if not 0 < confidence_level < 1:
@@ -68,12 +68,12 @@ def backtest_historical_var(
 
 
 def backtest_parametric_var(
-        connection: Connection,
-        portfolio: Portfolio,
-        confidence_level: float = 0.95,
-        window: int = 250,
-        horizon_days: int = 1,
-    ) -> VaRBacktestSummary:
+    connection: Connection,
+    portfolio: Portfolio,
+    confidence_level: float = 0.95,
+    window: int = 250,
+    horizon_days: int = 1,
+) -> VaRBacktestSummary:
     """Parametric (variance-covariance) VaR backtest."""
 
     if not 0 < confidence_level < 1:

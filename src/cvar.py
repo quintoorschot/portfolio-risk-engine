@@ -3,10 +3,10 @@ import pandas as pd
 import numpy as np
 
 def calculate_historical_cvar(
-        daily_pnl: pd.Series,
-        confidence_level: float = 0.95,
-        horizon_days: int = 1,
-    ) -> float:
+    daily_pnl: pd.Series,
+    confidence_level: float = 0.95,
+    horizon_days: int = 1,
+) -> float:
     """Calculate historical Conditional Value at Risk (CVaR)."""
 
     _validate_confidence_level(confidence_level)
@@ -41,10 +41,10 @@ def calculate_historical_cvar(
 
 
 def calculate_parametric_cvar(
-        daily_pnl: pd.Series,
-        confidence_level: float = 0.95,
-        horizon_days: int = 1,
-    ) -> float:
+    daily_pnl: pd.Series,
+    confidence_level: float = 0.95,
+    horizon_days: int = 1,
+) -> float:
     """Calculate parametric (variance-covariance) Conditional Value at Risk (CVaR)."""
 
     _validate_confidence_level(confidence_level)
@@ -75,7 +75,7 @@ def _validate_confidence_level(
         raise ValueError(f"[ERROR]: Confidence level c ({confidence_level}) should be in a valid range (i.e. 0 < c < 1)!")
 
 def _validate_horizon_days(
-        horizon_days: int,
+    horizon_days: int,
 ) -> None:
     if not isinstance(horizon_days, int) or horizon_days < 1:
         raise ValueError(f"[ERROR]: Horizon days ({horizon_days}) should be a postive integer")

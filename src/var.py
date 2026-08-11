@@ -4,10 +4,10 @@ import numpy as np
 
 
 def calculate_historical_var(
-        daily_pnl: pd.Series,
-        confidence_level: float = 0.95,
-        horizon_days: int = 1,
-    ) -> float:
+    daily_pnl: pd.Series,
+    confidence_level: float = 0.95,
+    horizon_days: int = 1,
+) -> float:
 
     _validate_confidence_level(confidence_level)
     _validate_horizon_days(horizon_days)
@@ -22,10 +22,10 @@ def calculate_historical_var(
 
 
 def calculate_parametric_var(
-        daily_pnl: pd.Series,
-        confidence_level: float = 0.95,
-        horizon_days: int = 1,
-    ) -> float:
+    daily_pnl: pd.Series,
+    confidence_level: float = 0.95,
+    horizon_days: int = 1,
+) -> float:
 
     _validate_confidence_level(confidence_level)
     _validate_horizon_days(horizon_days)
