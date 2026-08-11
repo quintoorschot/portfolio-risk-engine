@@ -147,9 +147,13 @@ class Portfolio:
     def _get_historical_pnl(self, connection: sqlite3.Connection) -> pd.Series:
         """Calculates the portfolio's historical PnL by applying current position exposures to historical asset returns derived from price data."""
 
+        # Get price history of all assets in portfolio
         prices: pd.DataFrame = get_price_data(connection, [position.instrument_id for position in self])
+
+        # Calculate daily returns by taking the percentage returns between days
         returns: pd.DataFrame = prices.pct_change().dropna()
 
+        # Current exposure for asset = asset quantity × asset market price
         current_exposures = pd.Series(
             {
                 position.instrument_id: position.quantity * position.market_price
@@ -161,6 +165,8 @@ class Portfolio:
         if len(prices) < 2:
             raise ValueError("[ERROR]: Not enough price history to calculate VaR!")
 
+        # Calculate PnL for each asset on every day
+        # For each day we calculate: PnL day i = return day i * current exposures
         return (
             returns
             .mul(current_exposures, axis="columns")
