@@ -123,6 +123,35 @@ class Portfolio:
 
 
     def parametric_cvar(self, confidence_level: float = 0.95, horizon: int = 1) -> float:
+        """Calculate the parametric Conditional Value at Risk (CVaR) for PnL data.
+
+        Uses a parametric model of the PnL distribution to estimate the expected loss
+        in the tail beyond the Value at Risk (VaR) threshold. Unlike historical CVaR,
+        which relies directly on observed PnL scenarios, parametric CVaR assumes a
+        statistical distribution for returns (e.g., normal distribution) and derives
+        the tail loss analytically based on the estimated distribution parameters.
+
+        CVaR (or Expected Shortfall) measures the average loss in the worst cases
+        beyond the VaR threshold at a given confidence level.
+
+        Args:
+            daily_pnl: Series of historical daily profit-and-loss observations used to
+                estimate the distribution parameters (e.g., mean and volatility).
+            confidence_level: Confidence level for the CVaR calculation. Must satisfy
+                0 < confidence_level < 1. Defaults to 0.95.
+            horizon_days: Number of trading days over which to calculate CVaR. Must be
+                a positive integer. Defaults to 1.
+
+        Returns:
+            The estimated expected loss beyond the VaR threshold (>= 0.0) at the given
+            confidence level under the assumed parametric distribution.
+
+        Raises:
+            ValueError: If the confidence level is invalid, if the time horizon is
+                invalid, if there are insufficient PnL observations to estimate the
+                distribution parameters, or if the parametric calculation cannot
+                produce a valid CVaR estimate.
+        """
         return calculate_parametric_cvar(
             self._get_historical_pnl(self.connection),
             confidence_level,
