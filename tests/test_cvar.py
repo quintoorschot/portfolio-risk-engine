@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from src.cvar import calculate_historical_cvar
+from src.cvar import calculate_historical_cvar, calculate_parametric_cvar
 import pytest
 
 # ============== Historical CVaR unit tests ============== #
@@ -81,3 +81,17 @@ def test_historical_cvar_invalid_horizon_days(
             confidence_level=0.95,
             horizon_days=horizon_days,
         )
+
+
+# ============== Parametric CVaR unit tests ============== #
+
+def test_parametric_cvar_95_percent_confidence_1_day_horizon() -> None:
+    pnl: pd.Series = pd.Series([1, -1, 2, -2, 0])
+
+    result: float = calculate_parametric_cvar(
+        pnl,
+        confidence_level=0.95,
+        horizon_days=1,
+    )
+
+    assert result == pytest.approx(3.26166, rel=1e-4)
