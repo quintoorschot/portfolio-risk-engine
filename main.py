@@ -20,7 +20,7 @@ def main() -> None:
         print("Historical CVaR (95%, 1 day):", portfolio.historical_cvar())
 
 
-        print("Parametric VaR (95%, 1 day):", portfolio.parametric_cvar())
+        print("Parametric CVaR (95%, 1 day):", portfolio.parametric_cvar())
 
         # backtest_summary: VaRBacktestSummary = backtest_parametric_var(connection, portfolio)
         # print(backtest_summary)

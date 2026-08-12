@@ -57,11 +57,11 @@ def calculate_parametric_cvar(
     horizon_mean: float = daily_pnl_mean * horizon_days
     horizon_volatility: float = daily_pnl_volatility * np.sqrt(horizon_days)
 
-    z_score: float = float(norm.ppf(confidence_level))
-    pdf_z_score: float = float(norm.pdf(z_score))
+    z_score: float = float(norm.ppf(1 - confidence_level))
+    tail_probability: float = float(norm.cdf(z_score))
 
-    cvar: float = (
-        horizon_volatility * pdf_z_score / (1 - confidence_level)
+    cvar = (
+        horizon_volatility * norm.pdf(z_score) / tail_probability
         - horizon_mean
     )
 
