@@ -53,11 +53,39 @@ pytest
 ```
 If all tests pass, the environment is ready for use.
 
-## ⚠️ Disclaimer
+# 🧮 Risk Metrics
 
-This project is intended for educational, research, and experimental purposes.
+## Value-at-Risk (VaR)
 
-It does not provide financial, investment, trading, or professional risk-management advice. Model outputs should be independently validated before being used for real financial decisions.
+The engine supports multiple VaR methodologies:
+
+### Historical VaR
+
+Uses empirical historical returns to estimate potential portfolio losses.
+
+### Parametric VaR
+
+Uses statistical assumptions about return distributions.
+
+## Conditional Value-at-Risk (CVaR)
+CVaR measures the expected loss beyond the VaR threshold.
+
+Also known as Expected Shortfall
+
+Supported methods:
+
+- Historical CVaR
+- Parametric CVaR
+
+# 🔄 Backtesting
+
+The engine includes historical backtesting to evaluate VaR model performance by comparing predicted losses against realized portfolio returns. The framework identifies VaR breaches and measures whether the observed violation frequency aligns with the expected confidence level.
+
+To statistically validate VaR accuracy, the engine implements the **Kupiec Proportion of Failures (POF) test**. The test evaluates the null hypothesis that the observed breach probability matches the expected VaR failure rate, providing a statistical measure of whether a risk model is correctly calibrated.
+
+# 📄 License
+
+This project is licensed under the MIT License. You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, subject to the conditions of the license.
 
 ## 🙏 Acknowledgements
 
