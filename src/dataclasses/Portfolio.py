@@ -4,12 +4,13 @@ from src.market_data import get_price_data
 from collections.abc import Iterator
 from typing import List, Any
 import pandas as pd
+import numpy as np
 import sqlite3
 
 from src.var import calculate_historical_var, calculate_parametric_var
 from src.cvar import calculate_historical_cvar, calculate_parametric_cvar
 
-@dataclass
+@dataclass(repr=False)
 class Portfolio:
     """Represents an investment portfolio with positions and risk calculations."""
 
@@ -19,6 +20,7 @@ class Portfolio:
     portfolio_name: str = field(init=False)
     base_currency: str = field(init=False)
     positions: List[Position] = field(default_factory=list)
+    total_value: float = field(init=False)
 
     def __post_init__(self) -> None:
         query: str = """
@@ -28,10 +30,32 @@ class Portfolio:
         """
         self.portfolio_name, self.base_currency = pd.read_sql_query(query, self.connection, params=(self.portfolio_id,)).iloc[0]
         self.positions = self._fetch_positions()
+        self.total_value = np.sum([position.market_price for position in self.positions])
 
 
     def __iter__(self) -> Iterator[Position]:
         return iter(self.positions)
+
+
+    def __repr__(self) -> str:
+        seperator: str = "=" * 70
+        positions: str = '\n'.join(f"\t{p.instrument_id}: {p.quantity} × ${p.market_price}" for p in self.positions)
+
+        return (
+            f"Portfolio {self.portfolio_id} ({self.base_currency}):\n"
+            f"{seperator}\n"
+            f"TOTAL VALUE: ${self.total_value}\n"
+            f"POSITIONS:\n"
+            f"{positions}\n\n"
+            f"{seperator}\n"
+            f"VALUE-AT-RISK:\n"
+            f"\tDaily historical VaR (95% confidence): ${self.historical_var():.2f}\n"
+            f"\tDaily parametric VaR (95% confidence): ${self.parametric_var():.2f}\n\n"
+            f"{seperator}\n"
+            f"CONDITIONAL VALUE-AT-RISK:\n"
+            f"\tDaily historical CVaR (95% confidence): ${self.historical_cvar():.2f}\n"
+            f"\tDaily parametric CVaR (95% confidence): ${self.parametric_cvar():.2f}\n\n"
+        )
 
 
     def historical_var(self, confidence_level: float = 0.95, horizon_days: int = 1) -> float:
@@ -157,6 +181,7 @@ class Portfolio:
             confidence_level,
             horizon,
         )
+
 
 
     def _fetch_positions(self) -> List[Position]:

@@ -15,12 +15,13 @@ def main() -> None:
         load_price_data(connection, TICKERS)
 
         portfolio: Portfolio = Portfolio(connection, "DEMO")
+        print(portfolio)
 
-        print("Historical VaR (95%, 1 day):", portfolio.historical_var())
-        print("Historical CVaR (95%, 1 day):", portfolio.historical_cvar())
+        # print("Historical VaR (95%, 1 day):", portfolio.historical_var())
+        # print("Historical CVaR (95%, 1 day):", portfolio.historical_cvar())
 
 
-        print("Parametric CVaR (95%, 1 day):", portfolio.parametric_cvar())
+        # print("Parametric CVaR (95%, 1 day):", portfolio.parametric_cvar())
 
         # backtest_summary: VaRBacktestSummary = backtest_parametric_var(connection, portfolio)
         # print(backtest_summary)
