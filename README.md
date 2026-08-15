@@ -83,10 +83,6 @@ The engine includes historical backtesting to evaluate VaR model performance by 
 
 To statistically validate VaR accuracy, the engine implements the **Kupiec Proportion of Failures (POF) test**. The test evaluates the null hypothesis that the observed breach probability matches the expected VaR failure rate, providing a statistical measure of whether a risk model is correctly calibrated.
 
-# 📄 License
-
-This project is licensed under the MIT License. You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, subject to the conditions of the license.
-
 ## 🙏 Acknowledgements
 
 This project was developed alongside my ongoing studies at Eindhoven University of Technology (TU/e), combining academic learning with independent research and implementation. The project was informed in part by material from MIT OpenCourseWare, alongside my own exploration of quantitative finance, risk modelling, and portfolio analytics.
